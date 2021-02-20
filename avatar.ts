@@ -75,7 +75,7 @@ class Avatar {
   }
 
   private getCanvasPoint(e: MouseEvent): Point {
-    this.canvasRect = this.canvas.getBoundingClientRect();
+    // this.canvasRect = this.canvas.getBoundingClientRect();
     let x = e.clientX - this.canvasRect.x;
     let y = e.clientY - this.canvasRect.y;
     return { x, y };
@@ -109,5 +109,25 @@ class Avatar {
     this.viewRect.height = this.canvas.height / scale;
     this.viewRect.x = this.origin.x - this.offset.x - this.viewRect.width / 2;
     this.viewRect.y = this.origin.y - this.offset.y - this.viewRect.height / 2;
+    this.checkViewRectBounds();
+  }
+
+  private checkViewRectBounds(): void {
+    if (this.origin.x - this.offset.x - this.viewRect.width / 2 < 0) {
+      let overX: number = this.origin.x - this.offset.x - this.viewRect.width / 2;
+      this.viewRect.x = this.viewRect.x - overX;
+    }
+    if (this.origin.x - this.offset.x + this.viewRect.width / 2 > this.image.width) {
+      let overX: number = this.image.width - (this.origin.x - this.offset.x + this.viewRect.width / 2);
+      this.viewRect.x = this.viewRect.x + overX;
+    }
+    if (this.origin.y - this.offset.y - this.viewRect.height / 2 < 0) {
+      let overY: number = this.origin.y - this.offset.y - this.viewRect.height / 2;
+      this.viewRect.y = this.viewRect.y - overY;
+    }
+    if (this.origin.y - this.offset.y + this.viewRect.height / 2 > this.image.height) {
+      let overY: number = this.image.height - (this.origin.y - this.offset.y + this.viewRect.height / 2);
+      this.viewRect.y = this.viewRect.y + overY;
+    }
   }
 }

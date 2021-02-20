@@ -18,9 +18,11 @@
     <canvas id="avatar" width="250" height="250"></canvas>
     <input type="range" value="1" min="1" max="5" step="0.1" id="scaleSlider">
 
+    <input type="file" id="imageFile">
+
     <script src="src/avatar.js"></script>
     <script>
-        let avatar = new Avatar('avatar', { image: 'images/one.jpg', scaleSlider: 'scaleSlider' })
+        let avatar = new Avatar('avatar', { image: 'images/one.jpg', scaleSlider: 'scaleSlider', file: 'imageFile' })
     </script>
 </body>
 
