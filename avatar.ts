@@ -18,6 +18,7 @@ interface Box {
 class Avatar {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
+  private canvasRect: DOMRect;
   private image: HTMLImageElement;
   private scaleSlider: HTMLInputElement;
 
@@ -25,12 +26,16 @@ class Avatar {
   private scaleModifier: number = 1;
   private origin: Point = { x: 0, y: 0 };
   private offset: Point = { x: 0, y: 0 };
-  private mouseOffset: Point = { x: 0, y: 0 };
+  private isDragging: boolean = false;
+  private mouseOrigin: Point = { x: 0, y: 0 };
   private viewRect: Box = { x: 0, y: 0, width: 0, height: 0 };
 
   constructor(canvas: string, options: AvatarOptions = {}) {
     this.canvas = document.getElementById(canvas) as HTMLCanvasElement;
     this.context = this.canvas.getContext("2d");
+    this.canvasRect = this.canvas.getBoundingClientRect();
+
+    this.canvasEvents();
 
     this.image = new Image();
     this.image.crossOrigin = "anonymous";
@@ -44,6 +49,36 @@ class Avatar {
       this.scaleSlider = document.getElementById(options.scaleSlider) as HTMLInputElement;
       this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
     }
+  }
+
+  private canvasEvents(): void {
+    this.canvas.addEventListener("mousedown", (e: MouseEvent) => {
+      this.isDragging = true;
+      this.mouseOrigin = this.getCanvasPoint(e);
+    });
+
+    this.canvas.addEventListener("mouseup", (e: MouseEvent) => {
+      this.isDragging = false;
+      this.origin.x = this.origin.x - this.offset.x;
+      this.origin.y = this.origin.y - this.offset.y;
+      this.offset = { x: 0, y: 0 };
+    });
+
+    this.canvas.addEventListener("mousemove", (e: MouseEvent) => {
+      if (this.isDragging) {
+        let pos: Point = this.getCanvasPoint(e);
+        this.offset.x = (pos.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
+        this.offset.y = (pos.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);
+        this.drawImage();
+      }
+    });
+  }
+
+  private getCanvasPoint(e: MouseEvent): Point {
+    this.canvasRect = this.canvas.getBoundingClientRect();
+    let x = e.clientX - this.canvasRect.x;
+    let y = e.clientY - this.canvasRect.y;
+    return { x, y };
   }
 
   private imageChange(): void {
