@@ -127,18 +127,22 @@ class Avatar {
     if (this.origin.x - this.offset.x - this.viewRect.width / 2 < 0) {
       let overX: number = this.origin.x - this.offset.x - this.viewRect.width / 2;
       this.viewRect.x = this.viewRect.x - overX;
+      this.origin.x = this.viewRect.width / 2;
     }
     if (this.origin.x - this.offset.x + this.viewRect.width / 2 > this.image.width) {
       let overX: number = this.image.width - (this.origin.x - this.offset.x + this.viewRect.width / 2);
       this.viewRect.x = this.viewRect.x + overX;
+      this.origin.x = this.image.width - this.viewRect.width / 2;
     }
     if (this.origin.y - this.offset.y - this.viewRect.height / 2 < 0) {
       let overY: number = this.origin.y - this.offset.y - this.viewRect.height / 2;
       this.viewRect.y = this.viewRect.y - overY;
+      this.origin.y = this.viewRect.height / 2;
     }
     if (this.origin.y - this.offset.y + this.viewRect.height / 2 > this.image.height) {
       let overY: number = this.image.height - (this.origin.y - this.offset.y + this.viewRect.height / 2);
       this.viewRect.y = this.viewRect.y + overY;
+      this.origin.y = this.image.height - this.viewRect.height / 2;
     }
   }
 }
