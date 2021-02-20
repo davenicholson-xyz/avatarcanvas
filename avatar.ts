@@ -1,6 +1,7 @@
 interface AvatarOptions {
   image?: string;
   scaleSlider?: string;
+  file?: string;
 }
 
 interface Point {
@@ -21,6 +22,7 @@ class Avatar {
   private canvasRect: DOMRect;
   private image: HTMLImageElement;
   private scaleSlider: HTMLInputElement;
+  private fileInput: HTMLInputElement;
 
   private scale: number = 1;
   private scaleModifier: number = 1;
@@ -49,6 +51,14 @@ class Avatar {
       this.scaleSlider = document.getElementById(options.scaleSlider) as HTMLInputElement;
       this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
     }
+
+    if (options.file) {
+      this.fileInput = document.getElementById(options.file) as HTMLInputElement;
+      this.fileInput.addEventListener("change", (e: Event) => {
+        let file = (<HTMLInputElement>e.target).files[0];
+        this.image.src = URL.createObjectURL(file);
+      });
+    }
   }
 
   private canvasEvents(): void {
@@ -75,13 +85,14 @@ class Avatar {
   }
 
   private getCanvasPoint(e: MouseEvent): Point {
-    // this.canvasRect = this.canvas.getBoundingClientRect();
     let x = e.clientX - this.canvasRect.x;
     let y = e.clientY - this.canvasRect.y;
     return { x, y };
   }
 
   private imageChange(): void {
+    this.scaleModifier = 1;
+    this.scaleSlider.valueAsNumber = 1;
     this.scale = Math.max(this.canvas.width / this.image.width, this.canvas.height / this.image.height);
     this.origin.x = this.image.width / 2;
     this.origin.y = this.image.height / 2;
