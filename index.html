@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: rgb(45, 45, 92);
+        }
+    </style>
+    <title>Document</title>
+</head>
+
+<body>
+
+    <canvas id="avatar" width="250" height="250"></canvas>
+    <input type="range" value="1" min="1" max="5" step="0.1" id="scaleSlider">
+
+    <script src="src/avatar.js"></script>
+    <script>
+        let avatar = new Avatar('avatar', { image: 'images/one.jpg', scaleSlider: 'scaleSlider' })
+    </script>
+</body>
+
+</html>
