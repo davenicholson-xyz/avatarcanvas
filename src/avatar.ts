@@ -31,6 +31,7 @@ export default class Avatar {
   private origin: Point = { x: 0, y: 0 };
   private offset: Point = { x: 0, y: 0 };
   private mousePosition = { x: 0, y: 0 };
+  private mouseImage = { x: 0, y: 0 };
   private isDragging: boolean = false;
   private mouseOrigin: Point = { x: 0, y: 0 };
   private viewRect: Box = { x: 0, y: 0, width: 0, height: 0 };
@@ -80,7 +81,10 @@ export default class Avatar {
 
     this.canvas.addEventListener("mousemove", (e: MouseEvent): void => {
       this.mousePosition = this.getCanvasPoint(e);
-      emitEvent("avatar-mousemove", { point: this.mousePosition });
+      this.mouseImage.x = this.mousePosition.x / (this.scale * this.scaleModifier) + this.viewRect.x;
+      this.mouseImage.y = this.mousePosition.y / (this.scale * this.scaleModifier) + this.viewRect.y;
+
+      emitEvent("avatar-mousemove", { canvas: this.mousePosition, image: this.mouseImage });
       if (this.isDragging) {
         this.offset.x = (this.mousePosition.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
         this.offset.y = (this.mousePosition.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);

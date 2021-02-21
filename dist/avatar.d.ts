@@ -25,6 +25,7 @@ export default class Avatar {
     private origin;
     private offset;
     private mousePosition;
+    private mouseImage;
     private isDragging;
     private mouseOrigin;
     private viewRect;

@@ -8,6 +8,7 @@ var Avatar = /** @class */ (function () {
         this.origin = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
         this.mousePosition = { x: 0, y: 0 };
+        this.mouseImage = { x: 0, y: 0 };
         this.isDragging = false;
         this.mouseOrigin = { x: 0, y: 0 };
         this.viewRect = { x: 0, y: 0, width: 0, height: 0 };
@@ -47,7 +48,9 @@ var Avatar = /** @class */ (function () {
         });
         this.canvas.addEventListener("mousemove", function (e) {
             _this.mousePosition = _this.getCanvasPoint(e);
-            emitEvent("avatar-mousemove", { point: _this.mousePosition });
+            _this.mouseImage.x = _this.mousePosition.x / (_this.scale * _this.scaleModifier) + _this.viewRect.x;
+            _this.mouseImage.y = _this.mousePosition.y / (_this.scale * _this.scaleModifier) + _this.viewRect.y;
+            emitEvent("avatar-mousemove", { canvas: _this.mousePosition, image: _this.mouseImage });
             if (_this.isDragging) {
                 _this.offset.x = (_this.mousePosition.x - _this.mouseOrigin.x) / (_this.scale * _this.scaleModifier);
                 _this.offset.y = (_this.mousePosition.y - _this.mouseOrigin.y) / (_this.scale * _this.scaleModifier);

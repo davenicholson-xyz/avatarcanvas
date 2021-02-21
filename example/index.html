@@ -41,11 +41,13 @@
 
         window.addEventListener("avatar-mousemove", (e) => {
             // now work out how to make it match the image
-            scale = avatar.getScale()
-            let mpos = e.detail.point
-            let rect = avatar.getViewRect()
-            mouse.x = (mpos.x / scale) + rect.x
-            mouse.y = (mpos.y / scale) + rect.y
+            // scale = avatar.getScale()
+            let mpos = e.detail.image
+            // let rect = avatar.getViewRect()
+            // mouse.x = (mpos.x / scale) + rect.x
+            // mouse.y = (mpos.y / scale) + rect.y
+            mouse.x = mpos.x
+            mouse.y = mpos.y
             drawImage()
         })
 
