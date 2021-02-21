@@ -1,6 +1,8 @@
 import { emitEvent } from "./helpers.js";
-export default class Avatar {
-    constructor(canvas, options = {}) {
+var Avatar = /** @class */ (function () {
+    function Avatar(canvas, options) {
+        var _this = this;
+        if (options === void 0) { options = {}; }
         this.scale = 1;
         this.scaleModifier = 1;
         this.origin = { x: 0, y: 0 };
@@ -25,58 +27,59 @@ export default class Avatar {
         }
         if (options.file) {
             this.fileInput = document.getElementById(options.file);
-            this.fileInput.addEventListener("change", (e) => {
-                let imagefile = e.target.files[0];
-                this.image.src = URL.createObjectURL(imagefile);
+            this.fileInput.addEventListener("change", function (e) {
+                var imagefile = e.target.files[0];
+                _this.image.src = URL.createObjectURL(imagefile);
             });
         }
     }
-    canvasEvents() {
-        this.canvas.addEventListener("mousedown", (e) => {
-            this.isDragging = true;
-            this.mouseOrigin = this.getCanvasPoint(e);
+    Avatar.prototype.canvasEvents = function () {
+        var _this = this;
+        this.canvas.addEventListener("mousedown", function (e) {
+            _this.isDragging = true;
+            _this.mouseOrigin = _this.getCanvasPoint(e);
         });
-        this.canvas.addEventListener("mouseup", (e) => {
-            this.isDragging = false;
-            this.origin.x = this.origin.x - this.offset.x;
-            this.origin.y = this.origin.y - this.offset.y;
-            this.offset = { x: 0, y: 0 };
+        this.canvas.addEventListener("mouseup", function (e) {
+            _this.isDragging = false;
+            _this.origin.x = _this.origin.x - _this.offset.x;
+            _this.origin.y = _this.origin.y - _this.offset.y;
+            _this.offset = { x: 0, y: 0 };
         });
-        this.canvas.addEventListener("mousemove", (e) => {
-            this.mousePosition = this.getCanvasPoint(e);
-            emitEvent("avatar-mousemove", { point: this.mousePosition });
-            if (this.isDragging) {
-                this.offset.x = (this.mousePosition.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
-                this.offset.y = (this.mousePosition.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);
-                this.drawImage();
+        this.canvas.addEventListener("mousemove", function (e) {
+            _this.mousePosition = _this.getCanvasPoint(e);
+            emitEvent("avatar-mousemove", { point: _this.mousePosition });
+            if (_this.isDragging) {
+                _this.offset.x = (_this.mousePosition.x - _this.mouseOrigin.x) / (_this.scale * _this.scaleModifier);
+                _this.offset.y = (_this.mousePosition.y - _this.mouseOrigin.y) / (_this.scale * _this.scaleModifier);
+                _this.drawImage();
             }
         });
-        this.canvas.addEventListener("wheel", (e) => {
+        this.canvas.addEventListener("wheel", function (e) {
             e.preventDefault();
             console.log(e.deltaY);
         });
-    }
-    getCanvas() {
+    };
+    Avatar.prototype.getCanvas = function () {
         return this.canvas;
-    }
-    getViewRect() {
+    };
+    Avatar.prototype.getViewRect = function () {
         return this.viewRect;
-    }
-    getOrigin() {
+    };
+    Avatar.prototype.getOrigin = function () {
         return this.origin;
-    }
-    getImage() {
+    };
+    Avatar.prototype.getImage = function () {
         return this.image;
-    }
-    getScale() {
+    };
+    Avatar.prototype.getScale = function () {
         return this.scale * this.scaleModifier;
-    }
-    getCanvasPoint(e) {
-        let x = e.clientX - this.canvasRect.x;
-        let y = e.clientY - this.canvasRect.y;
-        return { x, y };
-    }
-    imageChange() {
+    };
+    Avatar.prototype.getCanvasPoint = function (e) {
+        var x = e.clientX - this.canvasRect.x;
+        var y = e.clientY - this.canvasRect.y;
+        return { x: x, y: y };
+    };
+    Avatar.prototype.imageChange = function () {
         emitEvent("avatar-imagechange", { image: this.image.src });
         console.log(this.image.src);
         this.scaleModifier = 1;
@@ -85,48 +88,50 @@ export default class Avatar {
         this.origin.x = this.image.width / 2;
         this.origin.y = this.image.height / 2;
         this.drawImage();
-    }
-    drawImage() {
+    };
+    Avatar.prototype.drawImage = function () {
         this.clearCanvas();
         this.calculateViewRect();
         this.context.drawImage(this.image, this.viewRect.x, this.viewRect.y, this.viewRect.width, this.viewRect.height, 0, 0, this.canvas.width, this.canvas.height);
-    }
-    clearCanvas() {
+    };
+    Avatar.prototype.clearCanvas = function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-    scaleSliderChange(e) {
+    };
+    Avatar.prototype.scaleSliderChange = function (e) {
         this.scaleModifier = +e.target.value;
         this.drawImage();
-    }
-    calculateViewRect() {
-        let scale = this.scale * this.scaleModifier;
+    };
+    Avatar.prototype.calculateViewRect = function () {
+        var scale = this.scale * this.scaleModifier;
         this.viewRect.width = this.canvas.width / scale;
         this.viewRect.height = this.canvas.height / scale;
         this.viewRect.x = this.origin.x - this.offset.x - this.viewRect.width / 2;
         this.viewRect.y = this.origin.y - this.offset.y - this.viewRect.height / 2;
         this.checkViewRectBounds();
-    }
-    checkViewRectBounds() {
+    };
+    Avatar.prototype.checkViewRectBounds = function () {
         if (this.origin.x - this.offset.x - this.viewRect.width / 2 < 0) {
-            let overX = this.origin.x - this.offset.x - this.viewRect.width / 2;
+            var overX = this.origin.x - this.offset.x - this.viewRect.width / 2;
             this.viewRect.x = this.viewRect.x - overX;
             this.origin.x = this.viewRect.width / 2;
         }
         if (this.origin.x - this.offset.x + this.viewRect.width / 2 > this.image.width) {
-            let overX = this.image.width - (this.origin.x - this.offset.x + this.viewRect.width / 2);
+            var overX = this.image.width - (this.origin.x - this.offset.x + this.viewRect.width / 2);
             this.viewRect.x = this.viewRect.x + overX;
             this.origin.x = this.image.width - this.viewRect.width / 2;
         }
         if (this.origin.y - this.offset.y - this.viewRect.height / 2 < 0) {
-            let overY = this.origin.y - this.offset.y - this.viewRect.height / 2;
+            var overY = this.origin.y - this.offset.y - this.viewRect.height / 2;
             this.viewRect.y = this.viewRect.y - overY;
             this.origin.y = this.viewRect.height / 2;
         }
         if (this.origin.y - this.offset.y + this.viewRect.height / 2 > this.image.height) {
-            let overY = this.image.height - (this.origin.y - this.offset.y + this.viewRect.height / 2);
+            var overY = this.image.height - (this.origin.y - this.offset.y + this.viewRect.height / 2);
             this.viewRect.y = this.viewRect.y + overY;
             this.origin.y = this.image.height - this.viewRect.height / 2;
         }
-    }
-}
+    };
+    return Avatar;
+}());
+export default Avatar;
 //# sourceMappingURL=avatar.js.map
