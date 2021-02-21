@@ -83,7 +83,9 @@ var Avatar = /** @class */ (function () {
         emitEvent("avatar-imagechange", { image: this.image.src });
         console.log(this.image.src);
         this.scaleModifier = 1;
-        this.scaleSlider.valueAsNumber = 1;
+        if (this.scaleSlider) {
+            this.scaleSlider.valueAsNumber = 1;
+        }
         this.scale = Math.max(this.canvas.width / this.image.width, this.canvas.height / this.image.height);
         this.origin.x = this.image.width / 2;
         this.origin.y = this.image.height / 2;
