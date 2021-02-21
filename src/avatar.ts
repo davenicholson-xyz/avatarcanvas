@@ -1,4 +1,4 @@
-import { emmit } from "./helpers";
+import { emitEvent } from "./helpers.js";
 
 interface AvatarOptions {
   image?: string;
@@ -30,7 +30,7 @@ export default class Avatar {
   private scaleModifier: number = 1;
   private origin: Point = { x: 0, y: 0 };
   private offset: Point = { x: 0, y: 0 };
-  private mousePositon = { x: 0, y: 0 };
+  private mousePosition = { x: 0, y: 0 };
   private isDragging: boolean = false;
   private mouseOrigin: Point = { x: 0, y: 0 };
   private viewRect: Box = { x: 0, y: 0, width: 0, height: 0 };
@@ -46,6 +46,7 @@ export default class Avatar {
     this.image.crossOrigin = "anonymous";
 
     this.image.addEventListener("load", this.imageChange.bind(this));
+
     if (options.image) {
       this.image.src = options.image;
     }
@@ -57,7 +58,7 @@ export default class Avatar {
 
     if (options.file) {
       this.fileInput = document.getElementById(options.file) as HTMLInputElement;
-      this.fileInput.addEventListener("change", (e: Event) => {
+      this.fileInput.addEventListener("change", (e: Event): void => {
         let imagefile = (<HTMLInputElement>e.target).files![0];
         this.image.src = URL.createObjectURL(imagefile);
       });
@@ -65,26 +66,52 @@ export default class Avatar {
   }
 
   private canvasEvents(): void {
-    this.canvas.addEventListener("mousedown", (e: MouseEvent) => {
+    this.canvas.addEventListener("mousedown", (e: MouseEvent): void => {
       this.isDragging = true;
       this.mouseOrigin = this.getCanvasPoint(e);
     });
 
-    this.canvas.addEventListener("mouseup", (e: MouseEvent) => {
+    this.canvas.addEventListener("mouseup", (e: MouseEvent): void => {
       this.isDragging = false;
       this.origin.x = this.origin.x - this.offset.x;
       this.origin.y = this.origin.y - this.offset.y;
       this.offset = { x: 0, y: 0 };
     });
 
-    this.canvas.addEventListener("mousemove", (e: MouseEvent) => {
-      this.mousePositon = this.getCanvasPoint(e);
+    this.canvas.addEventListener("mousemove", (e: MouseEvent): void => {
+      this.mousePosition = this.getCanvasPoint(e);
+      emitEvent("avatar-mousemove", { point: this.mousePosition });
       if (this.isDragging) {
-        this.offset.x = (this.mousePositon.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
-        this.offset.y = (this.mousePositon.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);
+        this.offset.x = (this.mousePosition.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
+        this.offset.y = (this.mousePosition.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);
         this.drawImage();
       }
     });
+
+    this.canvas.addEventListener("wheel", (e: WheelEvent): void => {
+      e.preventDefault();
+      console.log(e.deltaY);
+    });
+  }
+
+  getCanvas(): HTMLCanvasElement {
+    return this.canvas;
+  }
+
+  getViewRect(): Box {
+    return this.viewRect;
+  }
+
+  getOrigin(): Point {
+    return this.origin;
+  }
+
+  getImage(): HTMLImageElement {
+    return this.image;
+  }
+
+  getScale(): number {
+    return this.scale * this.scaleModifier;
   }
 
   private getCanvasPoint(e: MouseEvent): Point {
@@ -94,6 +121,8 @@ export default class Avatar {
   }
 
   private imageChange(): void {
+    emitEvent("avatar-imagechange", { image: this.image.src });
+    console.log(this.image.src);
     this.scaleModifier = 1;
     this.scaleSlider.valueAsNumber = 1;
     this.scale = Math.max(this.canvas.width / this.image.width, this.canvas.height / this.image.height);

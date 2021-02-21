@@ -3,6 +3,16 @@ interface AvatarOptions {
     scaleSlider?: string;
     file?: string;
 }
+interface Point {
+    x: number;
+    y: number;
+}
+interface Box {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
 export default class Avatar {
     private canvas;
     private context;
@@ -14,12 +24,17 @@ export default class Avatar {
     private scaleModifier;
     private origin;
     private offset;
-    private mousePositon;
+    private mousePosition;
     private isDragging;
     private mouseOrigin;
     private viewRect;
     constructor(canvas: string, options?: AvatarOptions);
     private canvasEvents;
+    getCanvas(): HTMLCanvasElement;
+    getViewRect(): Box;
+    getOrigin(): Point;
+    getImage(): HTMLImageElement;
+    getScale(): number;
     private getCanvasPoint;
     private imageChange;
     private drawImage;

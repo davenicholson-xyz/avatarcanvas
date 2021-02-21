@@ -1,10 +1,11 @@
+import { emitEvent } from "./helpers.js";
 export default class Avatar {
     constructor(canvas, options = {}) {
         this.scale = 1;
         this.scaleModifier = 1;
         this.origin = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
-        this.mousePositon = { x: 0, y: 0 };
+        this.mousePosition = { x: 0, y: 0 };
         this.isDragging = false;
         this.mouseOrigin = { x: 0, y: 0 };
         this.viewRect = { x: 0, y: 0, width: 0, height: 0 };
@@ -42,13 +43,33 @@ export default class Avatar {
             this.offset = { x: 0, y: 0 };
         });
         this.canvas.addEventListener("mousemove", (e) => {
-            this.mousePositon = this.getCanvasPoint(e);
+            this.mousePosition = this.getCanvasPoint(e);
+            emitEvent("avatar-mousemove", { point: this.mousePosition });
             if (this.isDragging) {
-                this.offset.x = (this.mousePositon.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
-                this.offset.y = (this.mousePositon.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);
+                this.offset.x = (this.mousePosition.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
+                this.offset.y = (this.mousePosition.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);
                 this.drawImage();
             }
         });
+        this.canvas.addEventListener("wheel", (e) => {
+            e.preventDefault();
+            console.log(e.deltaY);
+        });
+    }
+    getCanvas() {
+        return this.canvas;
+    }
+    getViewRect() {
+        return this.viewRect;
+    }
+    getOrigin() {
+        return this.origin;
+    }
+    getImage() {
+        return this.image;
+    }
+    getScale() {
+        return this.scale * this.scaleModifier;
     }
     getCanvasPoint(e) {
         let x = e.clientX - this.canvasRect.x;
@@ -56,6 +77,8 @@ export default class Avatar {
         return { x, y };
     }
     imageChange() {
+        emitEvent("avatar-imagechange", { image: this.image.src });
+        console.log(this.image.src);
         this.scaleModifier = 1;
         this.scaleSlider.valueAsNumber = 1;
         this.scale = Math.max(this.canvas.width / this.image.width, this.canvas.height / this.image.height);
