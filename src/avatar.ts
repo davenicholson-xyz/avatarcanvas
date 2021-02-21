@@ -1,3 +1,5 @@
+import { emmit } from "./helpers";
+
 interface AvatarOptions {
   image?: string;
   scaleSlider?: string;
