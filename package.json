@@ -1,12 +1,15 @@
 {
   "name": "avatar",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/avatar.js",
+  "types": "dist",
   "license": "MIT",
   "scripts": {
-    "start": "esbuild avatar.ts --sourcemap --outdir=src --watch"
+    "build": "tsc -p .",
+    "watch": "esbuild avatar.ts --sourcemap --outdir=src --watch"
   },
   "devDependencies": {
-    "esbuild": "^0.8.49"
+    "esbuild": "^0.8.49",
+    "typescript": "^4.1.5"
   }
 }
