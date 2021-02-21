@@ -115,14 +115,14 @@ export default class Avatar {
   }
 
   private getCanvasPoint(e: MouseEvent): Point {
-    let x = e.clientX - this.canvasRect.x;
-    let y = e.clientY - this.canvasRect.y;
+    let canvasRect = this.canvas.getBoundingClientRect();
+    let x = e.clientX - canvasRect.x;
+    let y = e.clientY - canvasRect.y;
     return { x, y };
   }
 
   private imageChange(): void {
     emitEvent("avatar-imagechange", { image: this.image.src });
-    console.log(this.image.src);
     this.scaleModifier = 1;
 
     if (this.scaleSlider) {

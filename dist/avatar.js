@@ -75,13 +75,13 @@ var Avatar = /** @class */ (function () {
         return this.scale * this.scaleModifier;
     };
     Avatar.prototype.getCanvasPoint = function (e) {
-        var x = e.clientX - this.canvasRect.x;
-        var y = e.clientY - this.canvasRect.y;
+        var canvasRect = this.canvas.getBoundingClientRect();
+        var x = e.clientX - canvasRect.x;
+        var y = e.clientY - canvasRect.y;
         return { x: x, y: y };
     };
     Avatar.prototype.imageChange = function () {
         emitEvent("avatar-imagechange", { image: this.image.src });
-        console.log(this.image.src);
         this.scaleModifier = 1;
         if (this.scaleSlider) {
             this.scaleSlider.valueAsNumber = 1;
