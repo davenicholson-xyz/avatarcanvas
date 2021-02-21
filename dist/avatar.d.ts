@@ -8,12 +8,13 @@ export default class Avatar {
     private context;
     private canvasRect;
     private image;
-    private scaleSlider?;
+    private scaleSlider;
     private fileInput?;
     private scale;
     private scaleModifier;
     private origin;
     private offset;
+    private mousePositon;
     private isDragging;
     private mouseOrigin;
     private viewRect;

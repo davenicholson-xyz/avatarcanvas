@@ -21,13 +21,14 @@ export default class Avatar {
   private context: CanvasRenderingContext2D;
   private canvasRect: DOMRect;
   private image: HTMLImageElement;
-  private scaleSlider?: HTMLInputElement;
+  private scaleSlider!: HTMLInputElement;
   private fileInput?: HTMLInputElement;
 
   private scale: number = 1;
   private scaleModifier: number = 1;
   private origin: Point = { x: 0, y: 0 };
   private offset: Point = { x: 0, y: 0 };
+  private mousePositon = { x: 0, y: 0 };
   private isDragging: boolean = false;
   private mouseOrigin: Point = { x: 0, y: 0 };
   private viewRect: Box = { x: 0, y: 0, width: 0, height: 0 };
@@ -55,8 +56,8 @@ export default class Avatar {
     if (options.file) {
       this.fileInput = document.getElementById(options.file) as HTMLInputElement;
       this.fileInput.addEventListener("change", (e: Event) => {
-        let file = (<HTMLInputElement>e.target).files[0];
-        this.image.src = URL.createObjectURL(file);
+        let imagefile = (<HTMLInputElement>e.target).files![0];
+        this.image.src = URL.createObjectURL(imagefile);
       });
     }
   }
@@ -75,10 +76,10 @@ export default class Avatar {
     });
 
     this.canvas.addEventListener("mousemove", (e: MouseEvent) => {
+      this.mousePositon = this.getCanvasPoint(e);
       if (this.isDragging) {
-        let pos: Point = this.getCanvasPoint(e);
-        this.offset.x = (pos.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
-        this.offset.y = (pos.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);
+        this.offset.x = (this.mousePositon.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
+        this.offset.y = (this.mousePositon.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);
         this.drawImage();
       }
     });

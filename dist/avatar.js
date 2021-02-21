@@ -4,6 +4,7 @@ export default class Avatar {
         this.scaleModifier = 1;
         this.origin = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
+        this.mousePositon = { x: 0, y: 0 };
         this.isDragging = false;
         this.mouseOrigin = { x: 0, y: 0 };
         this.viewRect = { x: 0, y: 0, width: 0, height: 0 };
@@ -24,8 +25,8 @@ export default class Avatar {
         if (options.file) {
             this.fileInput = document.getElementById(options.file);
             this.fileInput.addEventListener("change", (e) => {
-                let file = e.target.files[0];
-                this.image.src = URL.createObjectURL(file);
+                let imagefile = e.target.files[0];
+                this.image.src = URL.createObjectURL(imagefile);
             });
         }
     }
@@ -41,10 +42,10 @@ export default class Avatar {
             this.offset = { x: 0, y: 0 };
         });
         this.canvas.addEventListener("mousemove", (e) => {
+            this.mousePositon = this.getCanvasPoint(e);
             if (this.isDragging) {
-                let pos = this.getCanvasPoint(e);
-                this.offset.x = (pos.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
-                this.offset.y = (pos.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);
+                this.offset.x = (this.mousePositon.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
+                this.offset.y = (this.mousePositon.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);
                 this.drawImage();
             }
         });
