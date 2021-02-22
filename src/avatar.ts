@@ -44,6 +44,9 @@ export default class Avatar {
   private viewRect: Box = { x: 0, y: 0, width: 0, height: 0 };
   private clip: boolean = false;
 
+  private canZoom: boolean = true;
+  private canScroll: boolean = true;
+
   constructor(canvas: string, options: AvatarOptions = {}) {
     this.canvas = document.getElementById(canvas) as HTMLCanvasElement;
     this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -107,13 +110,15 @@ export default class Avatar {
 
     this.canvas.addEventListener("wheel", (e: WheelEvent): void => {
       e.preventDefault();
-      let scale = this.scaleModifier + e.deltaY * -0.1;
-      scale = Math.min(this.scaleMax, Math.max(1, scale));
-      this.scaleModifier = scale;
-      if (this.scaleSlider) {
-        this.scaleSlider.valueAsNumber = this.scaleModifier;
+      if (this.canZoom) {
+        let scale = this.scaleModifier + e.deltaY * -0.1;
+        scale = Math.min(this.scaleMax, Math.max(1, scale));
+        this.scaleModifier = scale;
+        if (this.scaleSlider) {
+          this.scaleSlider.valueAsNumber = this.scaleModifier;
+        }
+        this.drawImage();
       }
-      this.drawImage();
     });
   }
 
@@ -135,6 +140,10 @@ export default class Avatar {
 
   getScale(): number {
     return this.scale * this.scaleModifier;
+  }
+
+  allowZoom(allow: boolean = true): void {
+    this.canZoom = allow;
   }
 
   private getCanvasPoint(e: MouseEvent): Point {
@@ -187,8 +196,10 @@ export default class Avatar {
   }
 
   private scaleSliderChange(e: Event): void {
-    this.scaleModifier = +(<HTMLInputElement>e.target).value;
-    this.drawImage();
+    if (this.canZoom) {
+      this.scaleModifier = +(<HTMLInputElement>e.target).value;
+      this.drawImage();
+    }
   }
 
   private calculateViewRect(): void {

@@ -14,6 +14,8 @@ var Avatar = /** @class */ (function () {
         this.mouseOrigin = { x: 0, y: 0 };
         this.viewRect = { x: 0, y: 0, width: 0, height: 0 };
         this.clip = false;
+        this.canZoom = true;
+        this.canScroll = true;
         this.canvas = document.getElementById(canvas);
         this.context = this.canvas.getContext("2d");
         this.canvasEvents();
@@ -65,13 +67,15 @@ var Avatar = /** @class */ (function () {
         });
         this.canvas.addEventListener("wheel", function (e) {
             e.preventDefault();
-            var scale = _this.scaleModifier + e.deltaY * -0.1;
-            scale = Math.min(_this.scaleMax, Math.max(1, scale));
-            _this.scaleModifier = scale;
-            if (_this.scaleSlider) {
-                _this.scaleSlider.valueAsNumber = _this.scaleModifier;
+            if (_this.canZoom) {
+                var scale = _this.scaleModifier + e.deltaY * -0.1;
+                scale = Math.min(_this.scaleMax, Math.max(1, scale));
+                _this.scaleModifier = scale;
+                if (_this.scaleSlider) {
+                    _this.scaleSlider.valueAsNumber = _this.scaleModifier;
+                }
+                _this.drawImage();
             }
-            _this.drawImage();
         });
     };
     Avatar.prototype.getCanvas = function () {
@@ -89,6 +93,10 @@ var Avatar = /** @class */ (function () {
     Avatar.prototype.getScale = function () {
         return this.scale * this.scaleModifier;
     };
+    Avatar.prototype.allowZoom = function (allow) {
+        if (allow === void 0) { allow = true; }
+        this.canZoom = allow;
+    };
     Avatar.prototype.getCanvasPoint = function (e) {
         var canvasRect = this.canvas.getBoundingClientRect();
         var x = e.clientX - canvasRect.x;
@@ -103,7 +111,7 @@ var Avatar = /** @class */ (function () {
         fileselect.addEventListener("change", function (e) {
             var imagefile = e.target.files[0];
             _this.image.src = URL.createObjectURL(imagefile);
-            cb();
+            cb && cb();
         });
         fileselect.click();
         fileselect.remove();
@@ -134,8 +142,10 @@ var Avatar = /** @class */ (function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     };
     Avatar.prototype.scaleSliderChange = function (e) {
-        this.scaleModifier = +e.target.value;
-        this.drawImage();
+        if (this.canZoom) {
+            this.scaleModifier = +e.target.value;
+            this.drawImage();
+        }
     };
     Avatar.prototype.calculateViewRect = function () {
         var scale = this.scale * this.scaleModifier;

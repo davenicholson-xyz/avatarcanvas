@@ -33,8 +33,10 @@
             slider: { id: "scaleSlider" },
             clip: "circle",
             file: 'imageFile',
-            image: 'images/one.jpg'
+            image: 'images/one.jpg',
+            scroll: false
         })
+        avatar.allowZoom(false)
 
         const canvas = document.getElementById("source")
         const context = canvas.getContext("2d")

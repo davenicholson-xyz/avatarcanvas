@@ -36,6 +36,8 @@ export default class Avatar {
     private mouseOrigin;
     private viewRect;
     private clip;
+    private canZoom;
+    private canScroll;
     constructor(canvas: string, options?: AvatarOptions);
     private canvasEvents;
     getCanvas(): HTMLCanvasElement;
@@ -43,8 +45,9 @@ export default class Avatar {
     getOrigin(): Point;
     getImage(): HTMLImageElement;
     getScale(): number;
+    allowZoom(allow?: boolean): void;
     private getCanvasPoint;
-    fileSelect(cb: Function): void;
+    fileSelect(cb?: Function): void;
     private imageChange;
     private drawImage;
     private clearCanvas;
