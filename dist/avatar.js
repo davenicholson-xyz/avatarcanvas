@@ -185,11 +185,13 @@ var Avatar = /** @class */ (function () {
         if (allow === void 0) { allow = true; }
         this.canPan = allow;
     };
-    Avatar.prototype.toPNG = function () {
-        return this.canvas.toDataURL("image/png", 1.0);
+    Avatar.prototype.toPNG = function (quality) {
+        if (quality === void 0) { quality = 1.0; }
+        return this.canvas.toDataURL("image/png", quality);
     };
-    Avatar.prototype.toJPG = function () {
-        return this.canvas.toDataURL("image/jpeg", 1.0);
+    Avatar.prototype.toJPG = function (quality) {
+        if (quality === void 0) { quality = 1.0; }
+        return this.canvas.toDataURL("image/jpeg", quality);
     };
     Avatar.prototype.toBlob = function (cb) {
         this.canvas.toBlob(function (blob) {

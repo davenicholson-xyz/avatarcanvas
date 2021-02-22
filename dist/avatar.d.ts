@@ -59,8 +59,8 @@ export default class Avatar {
     allowScroll(allow?: boolean): void;
     allowSlider(allow?: boolean): void;
     allowPan(allow?: boolean): void;
-    toPNG(): string;
-    toJPG(): string;
+    toPNG(quality?: number): string;
+    toJPG(quality?: number): string;
     toBlob(cb: Function): void;
     fileSelect(cb?: Function): void;
 }

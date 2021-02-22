@@ -245,12 +245,12 @@ export default class Avatar {
     this.canPan = allow;
   }
 
-  toPNG(): string {
-    return this.canvas.toDataURL("image/png", 1.0);
+  toPNG(quality: number = 1.0): string {
+    return this.canvas.toDataURL("image/png", quality);
   }
 
-  toJPG(): string {
-    return this.canvas.toDataURL("image/jpeg", 1.0);
+  toJPG(quality: number = 1.0): string {
+    return this.canvas.toDataURL("image/jpeg", quality);
   }
 
   toBlob(cb: Function): void {
