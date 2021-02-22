@@ -46,7 +46,7 @@ var Avatar = /** @class */ (function () {
         this.canvas.addEventListener("mousedown", function (e) {
             _this.isDragging = true;
             _this.mouseStart = _this.getCanvasPoint(e);
-            _this.emit("mousedown", { canvas: _this.mouseOnCanvas, image: _this.mouseOnImage });
+            _this.emit("mousedown", { canvas: _this.mouseOnCanvas, image: _this.mouseOnImage, origin: _this.imageOrigin });
         });
         this.canvas.addEventListener("mouseup", function (e) {
             _this.isDragging = false;
@@ -70,11 +70,10 @@ var Avatar = /** @class */ (function () {
         this.canvas.addEventListener("wheel", function (e) {
             e.preventDefault();
             if (_this.canZoom && _this.canScroll) {
-                var scale = _this.scaleModifier + e.deltaY * -0.1;
+                var scale = _this.scaleModifier + e.deltaY * -0.005;
                 scale = Math.min(_this.scaleMax, Math.max(1, scale));
-                // TODO: Calculate halfway between mouseOnImage and imageOrigin
-                // this.imageOrigin.x = (this.mouseOnImage.x - this.imageOrigin.x) / 2;
-                // this.imageOrigin.y = (this.mouseOnImage.y - this.imageOrigin.y) / 2;
+                _this.imageOrigin.x = (_this.imageOrigin.x + _this.mouseOnImage.x) / 2;
+                _this.imageOrigin.y = (_this.imageOrigin.y + _this.mouseOnImage.y) / 2;
                 _this.scaleModifier = scale;
                 if (_this.scaleSlider) {
                     _this.scaleSlider.valueAsNumber = _this.scaleModifier;

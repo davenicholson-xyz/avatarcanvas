@@ -61,6 +61,14 @@
             })
         })
 
+        document.getElementById("avatar").addEventListener("click", (e) => {
+            console.log(origin)
+            console.log(mouse)
+            let hx = (origin.x + mouse.x) / 2
+            let hy = (origin.y + mouse.y) / 2
+            // console.log(hx, hy)
+        })
+
         window.addEventListener("avatar-imagechanged", (e) => {
             image.src = e.detail.image
             console.log(e.detail.image)
@@ -84,6 +92,10 @@
         })
 
         function drawImage() {
+
+            let hx = (origin.x + mouse.x) / 2
+            let hy = (origin.y + mouse.y) / 2
+
             context.clearRect(0, 0, canvas.width, canvas.height)
             context.drawImage(image, 0, 0, image.width, image.height)
 
@@ -100,6 +112,11 @@
             context.beginPath();
             context.arc(origin.x, origin.y, 4, 0, 2 * Math.PI, false);
             context.fillStyle = 'blue';
+            context.fill();
+
+            context.beginPath();
+            context.arc(hx, hy, 4, 0, 2 * Math.PI, false);
+            context.fillStyle = 'green';
             context.fill();
         }
 
