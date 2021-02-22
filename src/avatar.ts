@@ -33,17 +33,21 @@ export default class Avatar {
   private scale: number = 1;
   private scaleModifier: number = 1;
   private scaleMax: number = 5;
-  private origin: Point = { x: 0, y: 0 };
+  private imageOrigin: Point = { x: 0, y: 0 };
   private offset: Point = { x: 0, y: 0 };
-  private mousePosition = { x: 0, y: 0 };
-  private mouseImage = { x: 0, y: 0 };
+
+  private mouseStart: Point = { x: 0, y: 0 };
+  private mouseOnCanvas = { x: 0, y: 0 };
+  private mouseOnImage = { x: 0, y: 0 };
   private isDragging: boolean = false;
-  private mouseOrigin: Point = { x: 0, y: 0 };
+
   private viewRect: Box = { x: 0, y: 0, width: 0, height: 0 };
   private clip: boolean = false;
 
   private canZoom: boolean = true;
   private canScroll: boolean = true;
+  private canSlider: boolean = true;
+  private canPan: boolean = true;
 
   constructor(canvas: string, options: AvatarOptions = {}) {
     this.canvas = document.getElementById(canvas) as HTMLCanvasElement;
@@ -53,7 +57,6 @@ export default class Avatar {
 
     this.image = new Image();
     this.image.crossOrigin = "anonymous";
-
     this.image.addEventListener("load", this.imageChange.bind(this));
 
     if (options.image) {
@@ -61,10 +64,9 @@ export default class Avatar {
     }
 
     if (options.clip) {
-      if (options.clip == "circle") {
-        this.clip = true;
-      }
+      this.clip = true;
     }
+
     if (options.slider) {
       this.scaleSlider = document.getElementById(options.slider.id) as HTMLInputElement;
       this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
@@ -82,40 +84,48 @@ export default class Avatar {
   private canvasEvents(): void {
     this.canvas.addEventListener("mousedown", (e: MouseEvent): void => {
       this.isDragging = true;
-      this.mouseOrigin = this.getCanvasPoint(e);
+      this.mouseStart = this.getCanvasPoint(e);
+      this.emit("mousedown", { canvas: this.mouseOnCanvas, image: this.mouseOnImage });
     });
 
     this.canvas.addEventListener("mouseup", (e: MouseEvent): void => {
       this.isDragging = false;
-      this.origin.x = this.origin.x - this.offset.x;
-      this.origin.y = this.origin.y - this.offset.y;
+      this.imageOrigin.x = this.imageOrigin.x - this.offset.x;
+      this.imageOrigin.y = this.imageOrigin.y - this.offset.y;
       this.offset = { x: 0, y: 0 };
+      this.drawImage();
+      this.emit("mouseup", { canvas: this.mouseOnCanvas, image: this.mouseOnImage });
     });
 
     this.canvas.addEventListener("mousemove", (e: MouseEvent): void => {
-      this.mousePosition = this.getCanvasPoint(e);
-      this.mouseImage.x = this.mousePosition.x / (this.scale * this.scaleModifier) + this.viewRect.x;
-      this.mouseImage.y = this.mousePosition.y / (this.scale * this.scaleModifier) + this.viewRect.y;
+      this.mouseOnCanvas = this.getCanvasPoint(e);
 
-      this.emit("mousemove", { canvas: this.mousePosition, image: this.mouseImage });
+      this.mouseOnImage.x = this.mouseOnCanvas.x / (this.scale * this.scaleModifier) + this.viewRect.x;
+      this.mouseOnImage.y = this.mouseOnCanvas.y / (this.scale * this.scaleModifier) + this.viewRect.y;
 
-      if (this.isDragging) {
-        this.offset.x = (this.mousePosition.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
-        this.offset.y = (this.mousePosition.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);
+      if (this.isDragging && this.canPan) {
+        this.offset.x = (this.mouseOnCanvas.x - this.mouseStart.x) / (this.scale * this.scaleModifier);
+        this.offset.y = (this.mouseOnCanvas.y - this.mouseStart.y) / (this.scale * this.scaleModifier);
         this.drawImage();
       }
+
+      this.emit("mousemove", { dragging: this.isDragging, canvas: this.mouseOnCanvas, image: this.mouseOnImage, origin: this.imageOrigin });
     });
 
     this.canvas.addEventListener("wheel", (e: WheelEvent): void => {
       e.preventDefault();
-      if (this.canZoom) {
+      if (this.canZoom && this.canScroll) {
         let scale = this.scaleModifier + e.deltaY * -0.1;
         scale = Math.min(this.scaleMax, Math.max(1, scale));
+        // TODO: Calculate halfway between mouseOnImage and imageOrigin
+        // this.imageOrigin.x = (this.mouseOnImage.x - this.imageOrigin.x) / 2;
+        // this.imageOrigin.y = (this.mouseOnImage.y - this.imageOrigin.y) / 2;
         this.scaleModifier = scale;
         if (this.scaleSlider) {
           this.scaleSlider.valueAsNumber = this.scaleModifier;
         }
         this.drawImage();
+        this.emit("scaled", { wheel: true, scale: this.scale, modifier: this.scaleModifier, absolute: this.scale * this.scaleModifier, origin: this.imageOrigin });
       }
     });
   }
@@ -132,15 +142,15 @@ export default class Avatar {
   }
 
   private imageChange(): void {
-    this.emit("imagechange", { image: this.image.src });
+    this.emit("imagechanged", { image: this.image.src });
     this.scaleModifier = 1;
 
     if (this.scaleSlider) {
       this.scaleSlider.valueAsNumber = 1;
     }
     this.scale = Math.max(this.canvas.width / this.image.width, this.canvas.height / this.image.height);
-    this.origin.x = this.image.width / 2;
-    this.origin.y = this.image.height / 2;
+    this.imageOrigin.x = this.image.width / 2;
+    this.imageOrigin.y = this.image.height / 2;
     this.drawImage();
   }
 
@@ -161,41 +171,42 @@ export default class Avatar {
   }
 
   private scaleSliderChange(e: Event): void {
-    if (this.canZoom) {
+    if (this.canZoom && this.canSlider) {
       this.scaleModifier = +(<HTMLInputElement>e.target).value;
       this.drawImage();
     }
+    this.emit("scalechanged", { slider: true, scale: this.scale, modifier: this.scaleModifier, absolute: this.scale * this.scaleModifier, origin: this.imageOrigin });
   }
 
   private calculateViewRect(): void {
     let scale = this.scale * this.scaleModifier;
     this.viewRect.width = this.canvas.width / scale;
     this.viewRect.height = this.canvas.height / scale;
-    this.viewRect.x = this.origin.x - this.offset.x - this.viewRect.width / 2;
-    this.viewRect.y = this.origin.y - this.offset.y - this.viewRect.height / 2;
+    this.viewRect.x = this.imageOrigin.x - this.offset.x - this.viewRect.width / 2;
+    this.viewRect.y = this.imageOrigin.y - this.offset.y - this.viewRect.height / 2;
     this.checkViewRectBounds();
   }
 
   private checkViewRectBounds(): void {
-    if (this.origin.x - this.offset.x - this.viewRect.width / 2 < 0) {
-      let overX: number = this.origin.x - this.offset.x - this.viewRect.width / 2;
+    if (this.imageOrigin.x - this.offset.x - this.viewRect.width / 2 < 0) {
+      let overX: number = this.imageOrigin.x - this.offset.x - this.viewRect.width / 2;
       this.viewRect.x = this.viewRect.x - overX;
-      this.origin.x = this.viewRect.width / 2;
+      this.imageOrigin.x = this.viewRect.width / 2;
     }
-    if (this.origin.x - this.offset.x + this.viewRect.width / 2 > this.image.width) {
-      let overX: number = this.image.width - (this.origin.x - this.offset.x + this.viewRect.width / 2);
+    if (this.imageOrigin.x - this.offset.x + this.viewRect.width / 2 > this.image.width) {
+      let overX: number = this.image.width - (this.imageOrigin.x - this.offset.x + this.viewRect.width / 2);
       this.viewRect.x = this.viewRect.x + overX;
-      this.origin.x = this.image.width - this.viewRect.width / 2;
+      this.imageOrigin.x = this.image.width - this.viewRect.width / 2;
     }
-    if (this.origin.y - this.offset.y - this.viewRect.height / 2 < 0) {
-      let overY: number = this.origin.y - this.offset.y - this.viewRect.height / 2;
+    if (this.imageOrigin.y - this.offset.y - this.viewRect.height / 2 < 0) {
+      let overY: number = this.imageOrigin.y - this.offset.y - this.viewRect.height / 2;
       this.viewRect.y = this.viewRect.y - overY;
-      this.origin.y = this.viewRect.height / 2;
+      this.imageOrigin.y = this.viewRect.height / 2;
     }
-    if (this.origin.y - this.offset.y + this.viewRect.height / 2 > this.image.height) {
-      let overY: number = this.image.height - (this.origin.y - this.offset.y + this.viewRect.height / 2);
+    if (this.imageOrigin.y - this.offset.y + this.viewRect.height / 2 > this.image.height) {
+      let overY: number = this.image.height - (this.imageOrigin.y - this.offset.y + this.viewRect.height / 2);
       this.viewRect.y = this.viewRect.y + overY;
-      this.origin.y = this.image.height - this.viewRect.height / 2;
+      this.imageOrigin.y = this.image.height - this.viewRect.height / 2;
     }
   }
 
@@ -208,7 +219,7 @@ export default class Avatar {
   }
 
   getOrigin(): Point {
-    return this.origin;
+    return this.imageOrigin;
   }
 
   getImage(): HTMLImageElement {
@@ -221,6 +232,18 @@ export default class Avatar {
 
   allowZoom(allow: boolean = true): void {
     this.canZoom = allow;
+  }
+
+  allowScroll(allow: boolean = true): void {
+    this.canScroll = allow;
+  }
+
+  allowSlider(allow: boolean = true): void {
+    this.canSlider = allow;
+  }
+
+  allowPan(allow: boolean = true): void {
+    this.canPan = allow;
   }
 
   toPNG(): string {

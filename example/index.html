@@ -21,7 +21,7 @@
 
     <button id="change">change</button>
     <button id="save">save</button>
-    <img src="" id="newImage">
+    <img src="" id="newImage" name="avatarimg">
 
     <div>
         <canvas id="source"></canvas>
@@ -31,12 +31,13 @@
         import Avatar from "/dist/avatar.js"
         let avatar = new Avatar('avatar', {
             slider: { id: "scaleSlider" },
-            clip: "circle",
-            // file: 'imageFile',
+            // clip: "circle",
+            file: 'imageFile',
             image: 'images/one.jpg',
             // scroll: false
         })
-        // avatar.allowZoom(false)
+        // avatar.allowPan(false)
+        // avatar.allowScroll(false)
 
         const canvas = document.getElementById("source")
         const context = canvas.getContext("2d")
@@ -44,14 +45,13 @@
         let image = new Image()
 
         let mouse = { x: 0, y: 0 }
+        let origin = { x: 0, y: 0 }
         let scale = 1
 
         let newImage = document.getElementById("newImage")
 
         document.getElementById("change").addEventListener("click", (e) => {
-            avatar.fileSelect(() => {
-                console.log('image changed')
-            })
+            avatar.fileSelect()
         })
 
         document.getElementById("save").addEventListener("click", (e) => {
@@ -61,35 +61,45 @@
             })
         })
 
-        window.addEventListener("avatar-imagechange", (e) => {
-            // image.src = e.detail.image
+        window.addEventListener("avatar-imagechanged", (e) => {
+            image.src = e.detail.image
+            console.log(e.detail.image)
         })
 
         window.addEventListener("avatar-scaled", e => {
-            console.log(e.detail.scale)
+            origin = e.detail.origin
             drawImage()
         })
         window.addEventListener("avatar-mousemove", (e) => {
-            let mpos = e.detail.image
-            mouse.x = mpos.x
-            mouse.y = mpos.y
-
+            mouse = e.detail.image
+            origin = e.detail.origin
             drawImage()
         })
 
         image.addEventListener("load", function () {
-            // canvas.width = image.width
-            // canvas.height = image.height
-            // scale = avatar.getScale()
-            // drawImage()
+            canvas.width = image.width
+            canvas.height = image.height
+            scale = avatar.getScale()
+            drawImage()
         })
 
         function drawImage() {
             context.clearRect(0, 0, canvas.width, canvas.height)
             context.drawImage(image, 0, 0, image.width, image.height)
+
+            context.beginPath()
+            context.moveTo(origin.x, origin.y)
+            context.lineTo(mouse.x, mouse.y)
+            context.stroke()
+
             context.beginPath();
             context.arc(mouse.x, mouse.y, 4, 0, 2 * Math.PI, false);
             context.fillStyle = 'red';
+            context.fill();
+
+            context.beginPath();
+            context.arc(origin.x, origin.y, 4, 0, 2 * Math.PI, false);
+            context.fillStyle = 'blue';
             context.fill();
         }
 
