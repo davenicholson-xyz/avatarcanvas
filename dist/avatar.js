@@ -59,7 +59,12 @@ var Avatar = /** @class */ (function () {
         });
         this.canvas.addEventListener("wheel", function (e) {
             e.preventDefault();
-            console.log(e.deltaY);
+            _this.origin = _this.mouseImage;
+            var scale = _this.scaleModifier + e.deltaY * -0.01;
+            scale = Math.max(1, scale);
+            _this.scaleModifier = scale;
+            _this.drawImage();
+            // console.log(e.deltaY);
         });
     };
     Avatar.prototype.getCanvas = function () {

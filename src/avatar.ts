@@ -94,7 +94,12 @@ export default class Avatar {
 
     this.canvas.addEventListener("wheel", (e: WheelEvent): void => {
       e.preventDefault();
-      console.log(e.deltaY);
+      this.origin = this.mouseImage;
+      let scale = this.scaleModifier + e.deltaY * -0.01;
+      scale = Math.max(1, scale);
+      this.scaleModifier = scale;
+      this.drawImage();
+      // console.log(e.deltaY);
     });
   }
 
