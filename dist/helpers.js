@@ -1,4 +1,4 @@
-export function emitEvent(name, detail) {
-    window.dispatchEvent(new CustomEvent(name, { detail: detail }));
+export function emitAvatarEvent(name, detail) {
+    window.dispatchEvent(new CustomEvent("avatar-" + name, { detail: detail }));
 }
 //# sourceMappingURL=helpers.js.map

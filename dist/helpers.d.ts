@@ -1,2 +1,2 @@
-export declare function emitEvent(name: string, detail: {}): void;
+export declare function emitAvatarEvent(name: string, detail: {}): void;
 //# sourceMappingURL=helpers.d.ts.map

@@ -1,3 +1,3 @@
-export function emitEvent(name: string, detail: {}) {
-  window.dispatchEvent(new CustomEvent(name, { detail }));
+export function emitAvatarEvent(name: string, detail: {}) {
+  window.dispatchEvent(new CustomEvent("avatar-" + name, { detail }));
 }

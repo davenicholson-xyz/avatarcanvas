@@ -1,4 +1,4 @@
-import { emitEvent } from "./helpers.js";
+import { emitAvatarEvent } from "./helpers.js";
 var Avatar = /** @class */ (function () {
     function Avatar(canvas, options) {
         var _this = this;
@@ -50,7 +50,7 @@ var Avatar = /** @class */ (function () {
             _this.mousePosition = _this.getCanvasPoint(e);
             _this.mouseImage.x = _this.mousePosition.x / (_this.scale * _this.scaleModifier) + _this.viewRect.x;
             _this.mouseImage.y = _this.mousePosition.y / (_this.scale * _this.scaleModifier) + _this.viewRect.y;
-            emitEvent("avatar-mousemove", { canvas: _this.mousePosition, image: _this.mouseImage });
+            emitAvatarEvent("mousemove", { canvas: _this.mousePosition, image: _this.mouseImage });
             if (_this.isDragging) {
                 _this.offset.x = (_this.mousePosition.x - _this.mouseOrigin.x) / (_this.scale * _this.scaleModifier);
                 _this.offset.y = (_this.mousePosition.y - _this.mouseOrigin.y) / (_this.scale * _this.scaleModifier);
@@ -89,7 +89,7 @@ var Avatar = /** @class */ (function () {
         return { x: x, y: y };
     };
     Avatar.prototype.imageChange = function () {
-        emitEvent("avatar-imagechange", { image: this.image.src });
+        emitAvatarEvent("imagechange", { image: this.image.src });
         this.scaleModifier = 1;
         if (this.scaleSlider) {
             this.scaleSlider.valueAsNumber = 1;

@@ -1,4 +1,4 @@
-import { emitEvent } from "./helpers.js";
+import { emitAvatarEvent } from "./helpers.js";
 
 interface AvatarOptions {
   image?: string;
@@ -84,7 +84,8 @@ export default class Avatar {
       this.mouseImage.x = this.mousePosition.x / (this.scale * this.scaleModifier) + this.viewRect.x;
       this.mouseImage.y = this.mousePosition.y / (this.scale * this.scaleModifier) + this.viewRect.y;
 
-      emitEvent("avatar-mousemove", { canvas: this.mousePosition, image: this.mouseImage });
+      emitAvatarEvent("mousemove", { canvas: this.mousePosition, image: this.mouseImage });
+
       if (this.isDragging) {
         this.offset.x = (this.mousePosition.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
         this.offset.y = (this.mousePosition.y - this.mouseOrigin.y) / (this.scale * this.scaleModifier);
@@ -131,7 +132,7 @@ export default class Avatar {
   }
 
   private imageChange(): void {
-    emitEvent("avatar-imagechange", { image: this.image.src });
+    emitAvatarEvent("imagechange", { image: this.image.src });
     this.scaleModifier = 1;
 
     if (this.scaleSlider) {
