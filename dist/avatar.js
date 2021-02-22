@@ -167,7 +167,10 @@ var Avatar = /** @class */ (function () {
         this.canZoom = allow;
     };
     Avatar.prototype.toPNG = function () {
-        return this.canvas.toDataURL("image/png", 100);
+        return this.canvas.toDataURL("image/png", 1.0);
+    };
+    Avatar.prototype.toJPG = function () {
+        return this.canvas.toDataURL("image/jpeg", 1.0);
     };
     Avatar.prototype.toBlob = function (cb) {
         this.canvas.toBlob(function (blob) {
@@ -178,7 +181,6 @@ var Avatar = /** @class */ (function () {
         var _this = this;
         var fileselect = document.createElement("input");
         fileselect.type = "file";
-        fileselect.id = "tempfileselect";
         fileselect.addEventListener("change", function (e) {
             var imagefile = e.target.files[0];
             _this.image.src = URL.createObjectURL(imagefile);

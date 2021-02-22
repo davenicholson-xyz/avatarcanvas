@@ -224,7 +224,11 @@ export default class Avatar {
   }
 
   toPNG(): string {
-    return this.canvas.toDataURL("image/png", 100);
+    return this.canvas.toDataURL("image/png", 1.0);
+  }
+
+  toJPG(): string {
+    return this.canvas.toDataURL("image/jpeg", 1.0);
   }
 
   toBlob(cb: Function): void {
@@ -236,7 +240,6 @@ export default class Avatar {
   fileSelect(cb?: Function): void {
     let fileselect = document.createElement("input") as HTMLInputElement;
     fileselect.type = "file";
-    fileselect.id = "tempfileselect";
     fileselect.addEventListener("change", (e: Event) => {
       let imagefile = (<HTMLInputElement>e.target).files![0];
       this.image.src = URL.createObjectURL(imagefile);

@@ -55,6 +55,7 @@ export default class Avatar {
     getScale(): number;
     allowZoom(allow?: boolean): void;
     toPNG(): string;
+    toJPG(): string;
     toBlob(cb: Function): void;
     fileSelect(cb?: Function): void;
 }
