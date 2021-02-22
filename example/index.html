@@ -32,11 +32,11 @@
         let avatar = new Avatar('avatar', {
             slider: { id: "scaleSlider" },
             clip: "circle",
-            file: 'imageFile',
+            // file: 'imageFile',
             image: 'images/one.jpg',
-            scroll: false
+            // scroll: false
         })
-        avatar.allowZoom(false)
+        // avatar.allowZoom(false)
 
         const canvas = document.getElementById("source")
         const context = canvas.getContext("2d")
@@ -86,15 +86,11 @@
 
         function drawImage() {
             context.clearRect(0, 0, canvas.width, canvas.height)
-
             context.drawImage(image, 0, 0, image.width, image.height)
-
             context.beginPath();
             context.arc(mouse.x, mouse.y, 4, 0, 2 * Math.PI, false);
             context.fillStyle = 'red';
             context.fill();
-
-
         }
 
     </script>
