@@ -2,8 +2,15 @@ import { emitAvatarEvent } from "./helpers.js";
 
 interface AvatarOptions {
   image?: string;
-  scaleSlider?: string;
+  slider?: Required<SliderConfig>;
   file?: string;
+  clip?: string;
+}
+
+interface SliderConfig {
+  id: string;
+  max?: number;
+  step?: number;
 }
 
 interface Point {
@@ -21,13 +28,13 @@ interface Box {
 export default class Avatar {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
-  private canvasRect: DOMRect;
   private image: HTMLImageElement;
   private scaleSlider!: HTMLInputElement;
   private fileInput?: HTMLInputElement;
 
   private scale: number = 1;
   private scaleModifier: number = 1;
+  private scaleMax: number = 5;
   private origin: Point = { x: 0, y: 0 };
   private offset: Point = { x: 0, y: 0 };
   private mousePosition = { x: 0, y: 0 };
@@ -35,11 +42,11 @@ export default class Avatar {
   private isDragging: boolean = false;
   private mouseOrigin: Point = { x: 0, y: 0 };
   private viewRect: Box = { x: 0, y: 0, width: 0, height: 0 };
+  private clip: boolean = false;
 
   constructor(canvas: string, options: AvatarOptions = {}) {
     this.canvas = document.getElementById(canvas) as HTMLCanvasElement;
     this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
-    this.canvasRect = this.canvas.getBoundingClientRect();
 
     this.canvasEvents();
 
@@ -52,8 +59,13 @@ export default class Avatar {
       this.image.src = options.image;
     }
 
-    if (options.scaleSlider) {
-      this.scaleSlider = document.getElementById(options.scaleSlider) as HTMLInputElement;
+    if (options.clip) {
+      if (options.clip == "circle") {
+        this.clip = true;
+      }
+    }
+    if (options.slider) {
+      this.scaleSlider = document.getElementById(options.slider.id) as HTMLInputElement;
       this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
     }
 
@@ -95,12 +107,13 @@ export default class Avatar {
 
     this.canvas.addEventListener("wheel", (e: WheelEvent): void => {
       e.preventDefault();
-      this.origin = this.mouseImage;
-      let scale = this.scaleModifier + e.deltaY * -0.01;
-      scale = Math.max(1, scale);
+      let scale = this.scaleModifier + e.deltaY * -0.1;
+      scale = Math.min(this.scaleMax, Math.max(1, scale));
       this.scaleModifier = scale;
+      if (this.scaleSlider) {
+        this.scaleSlider.valueAsNumber = this.scaleModifier;
+      }
       this.drawImage();
-      // console.log(e.deltaY);
     });
   }
 
@@ -145,9 +158,15 @@ export default class Avatar {
   }
 
   private drawImage(): void {
-    this.clearCanvas();
     this.calculateViewRect();
+    this.clearCanvas();
+    this.context.save();
+    if (this.clip) {
+      this.context.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / 2, 0, 2 * Math.PI, false);
+      this.context.clip();
+    }
     this.context.drawImage(this.image, this.viewRect.x, this.viewRect.y, this.viewRect.width, this.viewRect.height, 0, 0, this.canvas.width, this.canvas.height);
+    this.context.restore();
   }
 
   private clearCanvas(): void {
@@ -189,5 +208,15 @@ export default class Avatar {
       this.viewRect.y = this.viewRect.y + overY;
       this.origin.y = this.image.height - this.viewRect.height / 2;
     }
+  }
+
+  toPNG(): string {
+    return this.canvas.toDataURL("image/png", 100);
+  }
+
+  toBlob(cb: Function): void {
+    this.canvas.toBlob((blob) => {
+      cb(blob);
+    });
   }
 }

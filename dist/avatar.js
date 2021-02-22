@@ -5,6 +5,7 @@ var Avatar = /** @class */ (function () {
         if (options === void 0) { options = {}; }
         this.scale = 1;
         this.scaleModifier = 1;
+        this.scaleMax = 5;
         this.origin = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
         this.mousePosition = { x: 0, y: 0 };
@@ -12,9 +13,9 @@ var Avatar = /** @class */ (function () {
         this.isDragging = false;
         this.mouseOrigin = { x: 0, y: 0 };
         this.viewRect = { x: 0, y: 0, width: 0, height: 0 };
+        this.clip = false;
         this.canvas = document.getElementById(canvas);
         this.context = this.canvas.getContext("2d");
-        this.canvasRect = this.canvas.getBoundingClientRect();
         this.canvasEvents();
         this.image = new Image();
         this.image.crossOrigin = "anonymous";
@@ -22,8 +23,13 @@ var Avatar = /** @class */ (function () {
         if (options.image) {
             this.image.src = options.image;
         }
-        if (options.scaleSlider) {
-            this.scaleSlider = document.getElementById(options.scaleSlider);
+        if (options.clip) {
+            if (options.clip == "circle") {
+                this.clip = true;
+            }
+        }
+        if (options.slider) {
+            this.scaleSlider = document.getElementById(options.slider.id);
             this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
         }
         if (options.file) {
@@ -59,12 +65,13 @@ var Avatar = /** @class */ (function () {
         });
         this.canvas.addEventListener("wheel", function (e) {
             e.preventDefault();
-            _this.origin = _this.mouseImage;
-            var scale = _this.scaleModifier + e.deltaY * -0.01;
-            scale = Math.max(1, scale);
+            var scale = _this.scaleModifier + e.deltaY * -0.1;
+            scale = Math.min(_this.scaleMax, Math.max(1, scale));
             _this.scaleModifier = scale;
+            if (_this.scaleSlider) {
+                _this.scaleSlider.valueAsNumber = _this.scaleModifier;
+            }
             _this.drawImage();
-            // console.log(e.deltaY);
         });
     };
     Avatar.prototype.getCanvas = function () {
@@ -100,9 +107,15 @@ var Avatar = /** @class */ (function () {
         this.drawImage();
     };
     Avatar.prototype.drawImage = function () {
-        this.clearCanvas();
         this.calculateViewRect();
+        this.clearCanvas();
+        this.context.save();
+        if (this.clip) {
+            this.context.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / 2, 0, 2 * Math.PI, false);
+            this.context.clip();
+        }
         this.context.drawImage(this.image, this.viewRect.x, this.viewRect.y, this.viewRect.width, this.viewRect.height, 0, 0, this.canvas.width, this.canvas.height);
+        this.context.restore();
     };
     Avatar.prototype.clearCanvas = function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -140,6 +153,14 @@ var Avatar = /** @class */ (function () {
             this.viewRect.y = this.viewRect.y + overY;
             this.origin.y = this.image.height - this.viewRect.height / 2;
         }
+    };
+    Avatar.prototype.toPNG = function () {
+        return this.canvas.toDataURL("image/png", 100);
+    };
+    Avatar.prototype.toBlob = function (cb) {
+        this.canvas.toBlob(function (blob) {
+            cb(blob);
+        });
     };
     return Avatar;
 }());

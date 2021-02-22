@@ -19,13 +19,21 @@
     <input type="range" value="1" min="1" max="5" step="0.1" id="scaleSlider">
     <input type="file" id="imageFile">
 
+    <button id="save">save</button>
+    <img src="" id="newImage">
+
     <div>
         <canvas id="source"></canvas>
     </div>
 
     <script type="module">
         import Avatar from "/dist/avatar.js"
-        let avatar = new Avatar('avatar', { scaleSlider: 'scaleSlider', file: 'imageFile', image: 'images/one.jpg' })
+        let avatar = new Avatar('avatar', {
+            slider: { id: "scaleSlider" },
+            clip: "circle",
+            file: 'imageFile',
+            image: 'images/one.jpg'
+        })
 
         const canvas = document.getElementById("source")
         const context = canvas.getContext("2d")
@@ -35,37 +43,49 @@
         let mouse = { x: 0, y: 0 }
         let scale = 1
 
-        window.addEventListener("avatar-imagechange", (e) => {
-            image.src = e.detail.image
+        let newImage = document.getElementById("newImage")
+
+        document.getElementById("save").addEventListener("click", (e) => {
+            newImage.src = avatar.toPNG()
+            avatar.toBlob(function (blob) {
+                console.log(blob)
+            })
         })
 
+        window.addEventListener("avatar-imagechange", (e) => {
+            // image.src = e.detail.image
+        })
+
+        window.addEventListener("avatar-scaled", e => {
+            console.log(e.detail.scale)
+            drawImage()
+        })
         window.addEventListener("avatar-mousemove", (e) => {
-            // now work out how to make it match the image
-            // scale = avatar.getScale()
             let mpos = e.detail.image
-            // let rect = avatar.getViewRect()
-            // mouse.x = (mpos.x / scale) + rect.x
-            // mouse.y = (mpos.y / scale) + rect.y
             mouse.x = mpos.x
             mouse.y = mpos.y
+
             drawImage()
         })
 
         image.addEventListener("load", function () {
-            canvas.width = image.width
-            canvas.height = image.height
-            scale = avatar.getScale()
-            drawImage()
+            // canvas.width = image.width
+            // canvas.height = image.height
+            // scale = avatar.getScale()
+            // drawImage()
         })
 
         function drawImage() {
             context.clearRect(0, 0, canvas.width, canvas.height)
+
             context.drawImage(image, 0, 0, image.width, image.height)
 
             context.beginPath();
             context.arc(mouse.x, mouse.y, 4, 0, 2 * Math.PI, false);
             context.fillStyle = 'red';
             context.fill();
+
+
         }
 
     </script>

@@ -1,7 +1,13 @@
 interface AvatarOptions {
     image?: string;
-    scaleSlider?: string;
+    slider?: Required<SliderConfig>;
     file?: string;
+    clip?: string;
+}
+interface SliderConfig {
+    id: string;
+    max?: number;
+    step?: number;
 }
 interface Point {
     x: number;
@@ -16,12 +22,12 @@ interface Box {
 export default class Avatar {
     private canvas;
     private context;
-    private canvasRect;
     private image;
     private scaleSlider;
     private fileInput?;
     private scale;
     private scaleModifier;
+    private scaleMax;
     private origin;
     private offset;
     private mousePosition;
@@ -29,6 +35,7 @@ export default class Avatar {
     private isDragging;
     private mouseOrigin;
     private viewRect;
+    private clip;
     constructor(canvas: string, options?: AvatarOptions);
     private canvasEvents;
     getCanvas(): HTMLCanvasElement;
@@ -43,6 +50,8 @@ export default class Avatar {
     private scaleSliderChange;
     private calculateViewRect;
     private checkViewRectBounds;
+    toPNG(): string;
+    toBlob(cb: Function): void;
 }
 export {};
 //# sourceMappingURL=avatar.d.ts.map
