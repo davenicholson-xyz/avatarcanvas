@@ -72,9 +72,19 @@ var Avatar = /** @class */ (function () {
             if (_this.canZoom && _this.canScroll) {
                 var scale = _this.scaleModifier + e.deltaY * -0.005;
                 scale = Math.min(_this.scaleMax, Math.max(1, scale));
+                _this.scaleModifier = scale;
                 _this.imageOrigin.x = (_this.imageOrigin.x + _this.mouseOnImage.x) / 2;
                 _this.imageOrigin.y = (_this.imageOrigin.y + _this.mouseOnImage.y) / 2;
-                _this.scaleModifier = scale;
+                // // -- Origin to 20% of origin to mouse distance -- looks a bit crap
+                // let dx = this.imageOrigin.x - this.mouseOnImage.x;
+                // let dy = this.imageOrigin.x - this.mouseOnImage.x;
+                // let length = Math.sqrt(dx * dx + dy * dy);
+                // let ux = dx / length;
+                // let uy = dy / length;
+                // let nx = this.imageOrigin.x - ux * (length / 2);
+                // let ny = this.imageOrigin.y - uy * (length / 2);
+                // this.imageOrigin.x = nx;
+                // this.imageOrigin.y = nx;
                 if (_this.scaleSlider) {
                     _this.scaleSlider.valueAsNumber = _this.scaleModifier;
                 }

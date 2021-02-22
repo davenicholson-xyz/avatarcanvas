@@ -93,8 +93,14 @@
 
         function drawImage() {
 
-            let hx = (origin.x + mouse.x) / 2
-            let hy = (origin.y + mouse.y) / 2
+            let dx = origin.x - mouse.x
+            let dy = origin.y - mouse.y
+            let length = Math.sqrt(dx * dx + dy * dy)
+            let nx = dx / length
+            let ny = dy / length
+
+            let hx = origin.x - nx * (length / 5)
+            let hy = origin.y - ny * (length / 5)
 
             context.clearRect(0, 0, canvas.width, canvas.height)
             context.drawImage(image, 0, 0, image.width, image.height)

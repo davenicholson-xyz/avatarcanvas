@@ -117,9 +117,22 @@ export default class Avatar {
       if (this.canZoom && this.canScroll) {
         let scale = this.scaleModifier + e.deltaY * -0.005;
         scale = Math.min(this.scaleMax, Math.max(1, scale));
+        this.scaleModifier = scale;
+
         this.imageOrigin.x = (this.imageOrigin.x + this.mouseOnImage.x) / 2;
         this.imageOrigin.y = (this.imageOrigin.y + this.mouseOnImage.y) / 2;
-        this.scaleModifier = scale;
+
+        // // -- Origin to 20% of origin to mouse distance -- looks a bit crap
+        // let dx = this.imageOrigin.x - this.mouseOnImage.x;
+        // let dy = this.imageOrigin.x - this.mouseOnImage.x;
+        // let length = Math.sqrt(dx * dx + dy * dy);
+        // let ux = dx / length;
+        // let uy = dy / length;
+        // let nx = this.imageOrigin.x - ux * (length / 2);
+        // let ny = this.imageOrigin.y - uy * (length / 2);
+        // this.imageOrigin.x = nx;
+        // this.imageOrigin.y = nx;
+
         if (this.scaleSlider) {
           this.scaleSlider.valueAsNumber = this.scaleModifier;
         }
