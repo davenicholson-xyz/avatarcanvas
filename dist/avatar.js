@@ -1,4 +1,3 @@
-import { emitAvatarEvent } from "./helpers.js";
 var Avatar = /** @class */ (function () {
     function Avatar(canvas, options) {
         var _this = this;
@@ -58,7 +57,7 @@ var Avatar = /** @class */ (function () {
             _this.mousePosition = _this.getCanvasPoint(e);
             _this.mouseImage.x = _this.mousePosition.x / (_this.scale * _this.scaleModifier) + _this.viewRect.x;
             _this.mouseImage.y = _this.mousePosition.y / (_this.scale * _this.scaleModifier) + _this.viewRect.y;
-            emitAvatarEvent("mousemove", { canvas: _this.mousePosition, image: _this.mouseImage });
+            _this.emit("mousemove", { canvas: _this.mousePosition, image: _this.mouseImage });
             if (_this.isDragging) {
                 _this.offset.x = (_this.mousePosition.x - _this.mouseOrigin.x) / (_this.scale * _this.scaleModifier);
                 _this.offset.y = (_this.mousePosition.y - _this.mouseOrigin.y) / (_this.scale * _this.scaleModifier);
@@ -78,24 +77,8 @@ var Avatar = /** @class */ (function () {
             }
         });
     };
-    Avatar.prototype.getCanvas = function () {
-        return this.canvas;
-    };
-    Avatar.prototype.getViewRect = function () {
-        return this.viewRect;
-    };
-    Avatar.prototype.getOrigin = function () {
-        return this.origin;
-    };
-    Avatar.prototype.getImage = function () {
-        return this.image;
-    };
-    Avatar.prototype.getScale = function () {
-        return this.scale * this.scaleModifier;
-    };
-    Avatar.prototype.allowZoom = function (allow) {
-        if (allow === void 0) { allow = true; }
-        this.canZoom = allow;
+    Avatar.prototype.emit = function (name, detail) {
+        window.dispatchEvent(new CustomEvent("avatar-" + name, { detail: detail }));
     };
     Avatar.prototype.getCanvasPoint = function (e) {
         var canvasRect = this.canvas.getBoundingClientRect();
@@ -103,21 +86,8 @@ var Avatar = /** @class */ (function () {
         var y = e.clientY - canvasRect.y;
         return { x: x, y: y };
     };
-    Avatar.prototype.fileSelect = function (cb) {
-        var _this = this;
-        var fileselect = document.createElement("input");
-        fileselect.type = "file";
-        fileselect.id = "tempfileselect";
-        fileselect.addEventListener("change", function (e) {
-            var imagefile = e.target.files[0];
-            _this.image.src = URL.createObjectURL(imagefile);
-            cb && cb();
-        });
-        fileselect.click();
-        fileselect.remove();
-    };
     Avatar.prototype.imageChange = function () {
-        emitAvatarEvent("imagechange", { image: this.image.src });
+        this.emit("imagechange", { image: this.image.src });
         this.scaleModifier = 1;
         if (this.scaleSlider) {
             this.scaleSlider.valueAsNumber = 1;
@@ -177,6 +147,25 @@ var Avatar = /** @class */ (function () {
             this.origin.y = this.image.height - this.viewRect.height / 2;
         }
     };
+    Avatar.prototype.getCanvas = function () {
+        return this.canvas;
+    };
+    Avatar.prototype.getViewRect = function () {
+        return this.viewRect;
+    };
+    Avatar.prototype.getOrigin = function () {
+        return this.origin;
+    };
+    Avatar.prototype.getImage = function () {
+        return this.image;
+    };
+    Avatar.prototype.getScale = function () {
+        return this.scale * this.scaleModifier;
+    };
+    Avatar.prototype.allowZoom = function (allow) {
+        if (allow === void 0) { allow = true; }
+        this.canZoom = allow;
+    };
     Avatar.prototype.toPNG = function () {
         return this.canvas.toDataURL("image/png", 100);
     };
@@ -184,6 +173,19 @@ var Avatar = /** @class */ (function () {
         this.canvas.toBlob(function (blob) {
             cb(blob);
         });
+    };
+    Avatar.prototype.fileSelect = function (cb) {
+        var _this = this;
+        var fileselect = document.createElement("input");
+        fileselect.type = "file";
+        fileselect.id = "tempfileselect";
+        fileselect.addEventListener("change", function (e) {
+            var imagefile = e.target.files[0];
+            _this.image.src = URL.createObjectURL(imagefile);
+            cb && cb();
+        });
+        fileselect.click();
+        fileselect.remove();
     };
     return Avatar;
 }());

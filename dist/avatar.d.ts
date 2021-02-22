@@ -40,22 +40,23 @@ export default class Avatar {
     private canScroll;
     constructor(canvas: string, options?: AvatarOptions);
     private canvasEvents;
-    getCanvas(): HTMLCanvasElement;
-    getViewRect(): Box;
-    getOrigin(): Point;
-    getImage(): HTMLImageElement;
-    getScale(): number;
-    allowZoom(allow?: boolean): void;
+    private emit;
     private getCanvasPoint;
-    fileSelect(cb?: Function): void;
     private imageChange;
     private drawImage;
     private clearCanvas;
     private scaleSliderChange;
     private calculateViewRect;
     private checkViewRectBounds;
+    getCanvas(): HTMLCanvasElement;
+    getViewRect(): Box;
+    getOrigin(): Point;
+    getImage(): HTMLImageElement;
+    getScale(): number;
+    allowZoom(allow?: boolean): void;
     toPNG(): string;
     toBlob(cb: Function): void;
+    fileSelect(cb?: Function): void;
 }
 export {};
 //# sourceMappingURL=avatar.d.ts.map

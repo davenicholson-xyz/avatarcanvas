@@ -1,5 +1,3 @@
-import { emitAvatarEvent } from "./helpers.js";
-
 interface AvatarOptions {
   image?: string;
   slider?: Required<SliderConfig>;
@@ -99,7 +97,7 @@ export default class Avatar {
       this.mouseImage.x = this.mousePosition.x / (this.scale * this.scaleModifier) + this.viewRect.x;
       this.mouseImage.y = this.mousePosition.y / (this.scale * this.scaleModifier) + this.viewRect.y;
 
-      emitAvatarEvent("mousemove", { canvas: this.mousePosition, image: this.mouseImage });
+      this.emit("mousemove", { canvas: this.mousePosition, image: this.mouseImage });
 
       if (this.isDragging) {
         this.offset.x = (this.mousePosition.x - this.mouseOrigin.x) / (this.scale * this.scaleModifier);
@@ -122,28 +120,8 @@ export default class Avatar {
     });
   }
 
-  getCanvas(): HTMLCanvasElement {
-    return this.canvas;
-  }
-
-  getViewRect(): Box {
-    return this.viewRect;
-  }
-
-  getOrigin(): Point {
-    return this.origin;
-  }
-
-  getImage(): HTMLImageElement {
-    return this.image;
-  }
-
-  getScale(): number {
-    return this.scale * this.scaleModifier;
-  }
-
-  allowZoom(allow: boolean = true): void {
-    this.canZoom = allow;
+  private emit(name: string, detail: {}): void {
+    window.dispatchEvent(new CustomEvent("avatar-" + name, { detail }));
   }
 
   private getCanvasPoint(e: MouseEvent): Point {
@@ -153,21 +131,8 @@ export default class Avatar {
     return { x, y };
   }
 
-  fileSelect(cb?: Function): void {
-    let fileselect = document.createElement("input") as HTMLInputElement;
-    fileselect.type = "file";
-    fileselect.id = "tempfileselect";
-    fileselect.addEventListener("change", (e: Event) => {
-      let imagefile = (<HTMLInputElement>e.target).files![0];
-      this.image.src = URL.createObjectURL(imagefile);
-      cb && cb();
-    });
-    fileselect.click();
-    fileselect.remove();
-  }
-
   private imageChange(): void {
-    emitAvatarEvent("imagechange", { image: this.image.src });
+    this.emit("imagechange", { image: this.image.src });
     this.scaleModifier = 1;
 
     if (this.scaleSlider) {
@@ -234,6 +199,30 @@ export default class Avatar {
     }
   }
 
+  getCanvas(): HTMLCanvasElement {
+    return this.canvas;
+  }
+
+  getViewRect(): Box {
+    return this.viewRect;
+  }
+
+  getOrigin(): Point {
+    return this.origin;
+  }
+
+  getImage(): HTMLImageElement {
+    return this.image;
+  }
+
+  getScale(): number {
+    return this.scale * this.scaleModifier;
+  }
+
+  allowZoom(allow: boolean = true): void {
+    this.canZoom = allow;
+  }
+
   toPNG(): string {
     return this.canvas.toDataURL("image/png", 100);
   }
@@ -242,5 +231,18 @@ export default class Avatar {
     this.canvas.toBlob((blob) => {
       cb(blob);
     });
+  }
+
+  fileSelect(cb?: Function): void {
+    let fileselect = document.createElement("input") as HTMLInputElement;
+    fileselect.type = "file";
+    fileselect.id = "tempfileselect";
+    fileselect.addEventListener("change", (e: Event) => {
+      let imagefile = (<HTMLInputElement>e.target).files![0];
+      this.image.src = URL.createObjectURL(imagefile);
+      cb && cb();
+    });
+    fileselect.click();
+    fileselect.remove();
   }
 }
