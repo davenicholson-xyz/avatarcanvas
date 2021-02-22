@@ -95,6 +95,19 @@ var Avatar = /** @class */ (function () {
         var y = e.clientY - canvasRect.y;
         return { x: x, y: y };
     };
+    Avatar.prototype.fileSelect = function (cb) {
+        var _this = this;
+        var fileselect = document.createElement("input");
+        fileselect.type = "file";
+        fileselect.id = "tempfileselect";
+        fileselect.addEventListener("change", function (e) {
+            var imagefile = e.target.files[0];
+            _this.image.src = URL.createObjectURL(imagefile);
+            cb();
+        });
+        fileselect.click();
+        fileselect.remove();
+    };
     Avatar.prototype.imageChange = function () {
         emitAvatarEvent("imagechange", { image: this.image.src });
         this.scaleModifier = 1;

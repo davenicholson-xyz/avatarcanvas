@@ -44,6 +44,7 @@ export default class Avatar {
     getImage(): HTMLImageElement;
     getScale(): number;
     private getCanvasPoint;
+    fileSelect(cb: Function): void;
     private imageChange;
     private drawImage;
     private clearCanvas;

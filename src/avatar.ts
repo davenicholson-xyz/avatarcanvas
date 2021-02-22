@@ -144,6 +144,19 @@ export default class Avatar {
     return { x, y };
   }
 
+  fileSelect(cb: Function): void {
+    let fileselect = document.createElement("input") as HTMLInputElement;
+    fileselect.type = "file";
+    fileselect.id = "tempfileselect";
+    fileselect.addEventListener("change", (e: Event) => {
+      let imagefile = (<HTMLInputElement>e.target).files![0];
+      this.image.src = URL.createObjectURL(imagefile);
+      cb();
+    });
+    fileselect.click();
+    fileselect.remove();
+  }
+
   private imageChange(): void {
     emitAvatarEvent("imagechange", { image: this.image.src });
     this.scaleModifier = 1;
