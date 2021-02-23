@@ -300,6 +300,7 @@ export default class Avatar {
           };
           break;
         default:
+          this.clipFunction = () => {};
           break;
       }
     } else {

@@ -235,6 +235,7 @@ var Avatar = /** @class */ (function () {
                     };
                     break;
                 default:
+                    this.clipFunction = function () { };
                     break;
             }
         }
