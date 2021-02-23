@@ -11,7 +11,6 @@ interface SliderOptions {
   step?: number;
   disabled?: boolean;
 }
-// interface ClipOptions {}
 
 interface Point {
   x: number;
@@ -329,8 +328,9 @@ export default class Avatar {
       this.scaleSlider.step = this.scaleSlider.step == "" ? String(0.1) : this.scaleSlider.step;
       config.step && (this.scaleSlider.step = String(config.step));
 
-      let disabled = config.disabled ? config.disabled : !this.canSlider;
-      this.canSlider = !disabled;
+      if (typeof config.disabled === "boolean") {
+        this.canSlider = !config.disabled;
+      }
     } else {
       console.log("whoops... need string or object for slider"); // TODO: Sort error handling
     }
