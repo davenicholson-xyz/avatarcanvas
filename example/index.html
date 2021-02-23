@@ -29,10 +29,11 @@
 
     <script type="module">
         import Avatar from "/dist/avatar.js"
+
         let avatar = new Avatar('avatar', {
-            slider: { id: "scaleSlider" },
+            slider: { id: "scaleSlider", max: 8, step: 1 },
             // clip: "circle",
-            file: 'imageFile',
+            // file: 'imageFile',  
             image: 'images/one.jpg',
             // scroll: false
         })
@@ -102,6 +103,8 @@
             let hx = origin.x - nx * (length / 5)
             let hy = origin.y - ny * (length / 5)
 
+            let rect = avatar.getViewRect()
+
             context.clearRect(0, 0, canvas.width, canvas.height)
             context.drawImage(image, 0, 0, image.width, image.height)
 
@@ -124,6 +127,12 @@
             context.arc(hx, hy, 4, 0, 2 * Math.PI, false);
             context.fillStyle = 'green';
             context.fill();
+
+            context.beginPath();
+            context.rect(rect.x, rect.y, rect.width, rect.height);
+            context.strokeStyle = 'yellow'
+            context.lineWidth = 2
+            context.stroke();
         }
 
     </script>
