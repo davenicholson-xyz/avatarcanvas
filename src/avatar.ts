@@ -78,56 +78,6 @@ export default class Avatar {
     }
   }
 
-  clip(config: string | number[]): void {
-    if (typeof config === "string") {
-      switch (config) {
-        case "circle":
-          this.clipFunction = function () {
-            this.context.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / 2, 0, 2 * Math.PI, false);
-          };
-          break;
-        default:
-          break;
-      }
-    } else {
-      // make paths
-    }
-  }
-
-  slider(config: SliderOptions | string): void {
-    let initial = this.scaleSlider ? false : true;
-
-    if (typeof config === "string") {
-      this.scaleSlider = document.getElementById(config) as HTMLInputElement;
-      this.scaleMax = this.scaleSlider.max == "" ? 5 : +this.scaleSlider.max;
-      this.scaleSlider.max = String(this.scaleMax);
-      this.scaleSlider.step = this.scaleSlider.step == "" ? "0.1" : this.scaleSlider.step;
-    } else if (typeof config === "object") {
-      config.id && (this.scaleSlider = document.getElementById(config.id) as HTMLInputElement);
-
-      this.scaleMax = this.scaleSlider.max == "" ? 5 : +this.scaleSlider.max;
-      this.scaleSlider.max = String(this.scaleMax);
-      if (config.max) {
-        this.scaleSlider.max = String(config.max);
-        this.scaleMax = config.max;
-      }
-
-      this.scaleSlider.step = this.scaleSlider.step == "" ? String(0.1) : this.scaleSlider.step;
-      config.step && (this.scaleSlider.step = String(config.step));
-
-      let disabled = config.disabled ? config.disabled : !this.canSlider;
-      this.canSlider = !disabled;
-    } else {
-      console.log("whoops... need string or object for slider"); // TODO: Sort error handling
-    }
-
-    if (initial) {
-      this.scaleSlider.min = "1";
-      this.scaleSlider.value = "1";
-      this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
-    }
-  }
-
   private canvasEvents(): void {
     this.canvas.addEventListener("mousedown", (e: MouseEvent): void => {
       this.isDragging = true;
@@ -327,5 +277,68 @@ export default class Avatar {
     });
     fileselect.click();
     fileselect.remove();
+  }
+
+  clip(config: string | []): void {
+    if (typeof config === "string") {
+      switch (config) {
+        case "circle":
+          this.clipFunction = function () {
+            this.context.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / 2, 0, 2 * Math.PI, false);
+          };
+          break;
+        case "diamond":
+          let lp: Point = { x: 0, y: this.canvas.height / 2 };
+          let tp: Point = { x: this.canvas.width / 2, y: 0 };
+          let rp: Point = { x: this.canvas.width, y: this.canvas.height / 2 };
+          let bp: Point = { x: this.canvas.width / 2, y: this.canvas.height };
+          this.clipFunction = () => {
+            this.context.moveTo(lp.x, lp.y);
+            this.context.lineTo(tp.x, tp.y);
+            this.context.lineTo(rp.x, rp.y);
+            this.context.lineTo(bp.x, bp.y);
+            this.context.lineTo(lp.x, lp.y);
+          };
+          break;
+        default:
+          break;
+      }
+    } else {
+      // TODO: this should be an array of [x,y] to draw clip path
+    }
+  }
+
+  slider(config: SliderOptions | string): void {
+    let initial = this.scaleSlider ? false : true;
+
+    if (typeof config === "string") {
+      this.scaleSlider = document.getElementById(config) as HTMLInputElement;
+      this.scaleMax = this.scaleSlider.max == "" ? 5 : +this.scaleSlider.max;
+      this.scaleSlider.max = String(this.scaleMax);
+      this.scaleSlider.step = this.scaleSlider.step == "" ? "0.1" : this.scaleSlider.step;
+    } else if (typeof config === "object") {
+      config.id && (this.scaleSlider = document.getElementById(config.id) as HTMLInputElement);
+
+      this.scaleMax = this.scaleSlider.max == "" ? 5 : +this.scaleSlider.max;
+      this.scaleSlider.max = String(this.scaleMax);
+      if (config.max) {
+        this.scaleSlider.max = String(config.max);
+        this.scaleMax = config.max;
+      }
+
+      this.scaleSlider.step = this.scaleSlider.step == "" ? String(0.1) : this.scaleSlider.step;
+      config.step && (this.scaleSlider.step = String(config.step));
+
+      let disabled = config.disabled ? config.disabled : !this.canSlider;
+      this.canSlider = !disabled;
+    } else {
+      console.log("whoops... need string or object for slider"); // TODO: Sort error handling
+    }
+
+    if (initial) {
+      this.scaleSlider.min = "1";
+      this.scaleSlider.value = "1";
+      this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
+    }
   }
 }

@@ -35,52 +35,6 @@ var Avatar = /** @class */ (function () {
             });
         }
     }
-    Avatar.prototype.clip = function (config) {
-        if (typeof config === "string") {
-            switch (config) {
-                case "circle":
-                    this.clipFunction = function () {
-                        this.context.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / 2, 0, 2 * Math.PI, false);
-                    };
-                    break;
-                default:
-                    break;
-            }
-        }
-        else {
-            // make paths
-        }
-    };
-    Avatar.prototype.slider = function (config) {
-        var initial = this.scaleSlider ? false : true;
-        if (typeof config === "string") {
-            this.scaleSlider = document.getElementById(config);
-            this.scaleMax = this.scaleSlider.max == "" ? 5 : +this.scaleSlider.max;
-            this.scaleSlider.max = String(this.scaleMax);
-            this.scaleSlider.step = this.scaleSlider.step == "" ? "0.1" : this.scaleSlider.step;
-        }
-        else if (typeof config === "object") {
-            config.id && (this.scaleSlider = document.getElementById(config.id));
-            this.scaleMax = this.scaleSlider.max == "" ? 5 : +this.scaleSlider.max;
-            this.scaleSlider.max = String(this.scaleMax);
-            if (config.max) {
-                this.scaleSlider.max = String(config.max);
-                this.scaleMax = config.max;
-            }
-            this.scaleSlider.step = this.scaleSlider.step == "" ? String(0.1) : this.scaleSlider.step;
-            config.step && (this.scaleSlider.step = String(config.step));
-            var disabled = config.disabled ? config.disabled : !this.canSlider;
-            this.canSlider = !disabled;
-        }
-        else {
-            console.log("whoops... need string or object for slider"); // TODO: Sort error handling
-        }
-        if (initial) {
-            this.scaleSlider.min = "1";
-            this.scaleSlider.value = "1";
-            this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
-        }
-    };
     Avatar.prototype.canvasEvents = function () {
         var _this = this;
         this.canvas.addEventListener("mousedown", function (e) {
@@ -257,6 +211,66 @@ var Avatar = /** @class */ (function () {
         });
         fileselect.click();
         fileselect.remove();
+    };
+    Avatar.prototype.clip = function (config) {
+        var _this = this;
+        if (typeof config === "string") {
+            switch (config) {
+                case "circle":
+                    this.clipFunction = function () {
+                        this.context.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / 2, 0, 2 * Math.PI, false);
+                    };
+                    break;
+                case "diamond":
+                    var lp_1 = { x: 0, y: this.canvas.height / 2 };
+                    var tp_1 = { x: this.canvas.width / 2, y: 0 };
+                    var rp_1 = { x: this.canvas.width, y: this.canvas.height / 2 };
+                    var bp_1 = { x: this.canvas.width / 2, y: this.canvas.height };
+                    this.clipFunction = function () {
+                        _this.context.moveTo(lp_1.x, lp_1.y);
+                        _this.context.lineTo(tp_1.x, tp_1.y);
+                        _this.context.lineTo(rp_1.x, rp_1.y);
+                        _this.context.lineTo(bp_1.x, bp_1.y);
+                        _this.context.lineTo(lp_1.x, lp_1.y);
+                    };
+                    break;
+                default:
+                    break;
+            }
+        }
+        else {
+            // TODO: this should be an array of [x,y] to draw clip path
+        }
+    };
+    Avatar.prototype.slider = function (config) {
+        var initial = this.scaleSlider ? false : true;
+        if (typeof config === "string") {
+            this.scaleSlider = document.getElementById(config);
+            this.scaleMax = this.scaleSlider.max == "" ? 5 : +this.scaleSlider.max;
+            this.scaleSlider.max = String(this.scaleMax);
+            this.scaleSlider.step = this.scaleSlider.step == "" ? "0.1" : this.scaleSlider.step;
+        }
+        else if (typeof config === "object") {
+            config.id && (this.scaleSlider = document.getElementById(config.id));
+            this.scaleMax = this.scaleSlider.max == "" ? 5 : +this.scaleSlider.max;
+            this.scaleSlider.max = String(this.scaleMax);
+            if (config.max) {
+                this.scaleSlider.max = String(config.max);
+                this.scaleMax = config.max;
+            }
+            this.scaleSlider.step = this.scaleSlider.step == "" ? String(0.1) : this.scaleSlider.step;
+            config.step && (this.scaleSlider.step = String(config.step));
+            var disabled = config.disabled ? config.disabled : !this.canSlider;
+            this.canSlider = !disabled;
+        }
+        else {
+            console.log("whoops... need string or object for slider"); // TODO: Sort error handling
+        }
+        if (initial) {
+            this.scaleSlider.min = "1";
+            this.scaleSlider.value = "1";
+            this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
+        }
     };
     return Avatar;
 }());

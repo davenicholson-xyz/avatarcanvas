@@ -42,8 +42,6 @@ export default class Avatar {
     private canPan;
     private clipFunction;
     constructor(canvas: string, config?: AvatarConfig);
-    clip(config: string | number[]): void;
-    slider(config: SliderOptions | string): void;
     private canvasEvents;
     private emit;
     private getCanvasPoint;
@@ -66,6 +64,8 @@ export default class Avatar {
     toJPG(quality?: number): string;
     toBlob(cb: Function): void;
     fileSelect(cb?: Function): void;
+    clip(config: string | []): void;
+    slider(config: SliderOptions | string): void;
 }
 export {};
 //# sourceMappingURL=avatar.d.ts.map
