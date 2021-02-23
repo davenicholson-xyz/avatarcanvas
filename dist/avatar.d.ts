@@ -1,13 +1,14 @@
-interface AvatarOptions {
+interface AvatarConfig {
     image?: string;
-    slider?: Required<SliderConfig>;
+    slider?: Required<SliderOptions> | string;
     file?: string;
     clip?: string;
 }
-interface SliderConfig {
+interface SliderOptions {
     id: string;
     max?: number;
     step?: number;
+    disabled?: boolean;
 }
 interface Point {
     x: number;
@@ -35,12 +36,14 @@ export default class Avatar {
     private mouseOnImage;
     private isDragging;
     private viewRect;
-    private clip;
     private canZoom;
     private canScroll;
     private canSlider;
     private canPan;
-    constructor(canvas: string, options?: AvatarOptions);
+    private clipFunction;
+    constructor(canvas: string, config?: AvatarConfig);
+    clip(config: string | number[]): void;
+    slider(config: SliderOptions | string): void;
     private canvasEvents;
     private emit;
     private getCanvasPoint;

@@ -1,7 +1,7 @@
 var Avatar = /** @class */ (function () {
-    function Avatar(canvas, options) {
+    function Avatar(canvas, config) {
         var _this = this;
-        if (options === void 0) { options = {}; }
+        if (config === void 0) { config = {}; }
         this.scale = 1;
         this.scaleModifier = 1;
         this.scaleMax = 5;
@@ -12,7 +12,6 @@ var Avatar = /** @class */ (function () {
         this.mouseOnImage = { x: 0, y: 0 };
         this.isDragging = false;
         this.viewRect = { x: 0, y: 0, width: 0, height: 0 };
-        this.clip = false;
         this.canZoom = true;
         this.canScroll = true;
         this.canSlider = true;
@@ -23,24 +22,65 @@ var Avatar = /** @class */ (function () {
         this.image = new Image();
         this.image.crossOrigin = "anonymous";
         this.image.addEventListener("load", this.imageChange.bind(this));
-        if (options.image) {
-            this.image.src = options.image;
+        if (config.image) {
+            this.image.src = config.image;
         }
-        if (options.clip) {
-            this.clip = true;
-        }
-        if (options.slider) {
-            this.scaleSlider = document.getElementById(options.slider.id);
-            this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
-        }
-        if (options.file) {
-            this.fileInput = document.getElementById(options.file);
+        config.slider && this.slider(config.slider);
+        config.clip && this.clip(config.clip);
+        if (config.file) {
+            this.fileInput = document.getElementById(config.file);
             this.fileInput.addEventListener("change", function (e) {
                 var imagefile = e.target.files[0];
                 _this.image.src = URL.createObjectURL(imagefile);
             });
         }
     }
+    Avatar.prototype.clip = function (config) {
+        if (typeof config === "string") {
+            switch (config) {
+                case "circle":
+                    this.clipFunction = function () {
+                        this.context.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / 2, 0, 2 * Math.PI, false);
+                    };
+                    break;
+                default:
+                    break;
+            }
+        }
+        else {
+            // make paths
+        }
+    };
+    Avatar.prototype.slider = function (config) {
+        var initial = this.scaleSlider ? false : true;
+        if (typeof config === "string") {
+            this.scaleSlider = document.getElementById(config);
+            this.scaleMax = this.scaleSlider.max == "" ? 5 : +this.scaleSlider.max;
+            this.scaleSlider.max = String(this.scaleMax);
+            this.scaleSlider.step = this.scaleSlider.step == "" ? "0.1" : this.scaleSlider.step;
+        }
+        else if (typeof config === "object") {
+            config.id && (this.scaleSlider = document.getElementById(config.id));
+            this.scaleMax = this.scaleSlider.max == "" ? 5 : +this.scaleSlider.max;
+            this.scaleSlider.max = String(this.scaleMax);
+            if (config.max) {
+                this.scaleSlider.max = String(config.max);
+                this.scaleMax = config.max;
+            }
+            this.scaleSlider.step = this.scaleSlider.step == "" ? String(0.1) : this.scaleSlider.step;
+            config.step && (this.scaleSlider.step = String(config.step));
+            var disabled = config.disabled ? config.disabled : !this.canSlider;
+            this.canSlider = !disabled;
+        }
+        else {
+            console.log("whoops... need string or object for slider"); // TODO: Sort error handling
+        }
+        if (initial) {
+            this.scaleSlider.min = "1";
+            this.scaleSlider.value = "1";
+            this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
+        }
+    };
     Avatar.prototype.canvasEvents = function () {
         var _this = this;
         this.canvas.addEventListener("mousedown", function (e) {
@@ -117,10 +157,8 @@ var Avatar = /** @class */ (function () {
         this.calculateViewRect();
         this.clearCanvas();
         this.context.save();
-        if (this.clip) {
-            this.context.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / 2, 0, 2 * Math.PI, false);
-            this.context.clip();
-        }
+        this.clipFunction && this.clipFunction();
+        this.clipFunction && this.context.clip();
         this.context.drawImage(this.image, this.viewRect.x, this.viewRect.y, this.viewRect.width, this.viewRect.height, 0, 0, this.canvas.width, this.canvas.height);
         this.context.restore();
     };

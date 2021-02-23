@@ -1,15 +1,17 @@
-interface AvatarOptions {
+interface AvatarConfig {
   image?: string;
-  slider?: Required<SliderConfig>;
+  slider?: Required<SliderOptions> | string;
   file?: string;
   clip?: string;
 }
 
-interface SliderConfig {
+interface SliderOptions {
   id: string;
   max?: number;
   step?: number;
+  disabled?: boolean;
 }
+// interface ClipOptions {}
 
 interface Point {
   x: number;
@@ -42,14 +44,15 @@ export default class Avatar {
   private isDragging: boolean = false;
 
   private viewRect: Box = { x: 0, y: 0, width: 0, height: 0 };
-  private clip: boolean = false;
 
   private canZoom: boolean = true;
   private canScroll: boolean = true;
   private canSlider: boolean = true;
   private canPan: boolean = true;
 
-  constructor(canvas: string, options: AvatarOptions = {}) {
+  private clipFunction!: Function;
+
+  constructor(canvas: string, config: AvatarConfig = {}) {
     this.canvas = document.getElementById(canvas) as HTMLCanvasElement;
     this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
@@ -59,25 +62,69 @@ export default class Avatar {
     this.image.crossOrigin = "anonymous";
     this.image.addEventListener("load", this.imageChange.bind(this));
 
-    if (options.image) {
-      this.image.src = options.image;
+    if (config.image) {
+      this.image.src = config.image;
     }
 
-    if (options.clip) {
-      this.clip = true;
-    }
+    config.slider && this.slider(config.slider);
+    config.clip && this.clip(config.clip);
 
-    if (options.slider) {
-      this.scaleSlider = document.getElementById(options.slider.id) as HTMLInputElement;
-      this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
-    }
-
-    if (options.file) {
-      this.fileInput = document.getElementById(options.file) as HTMLInputElement;
+    if (config.file) {
+      this.fileInput = document.getElementById(config.file) as HTMLInputElement;
       this.fileInput.addEventListener("change", (e: Event): void => {
         let imagefile = (<HTMLInputElement>e.target).files![0];
         this.image.src = URL.createObjectURL(imagefile);
       });
+    }
+  }
+
+  clip(config: string | number[]): void {
+    if (typeof config === "string") {
+      switch (config) {
+        case "circle":
+          this.clipFunction = function () {
+            this.context.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / 2, 0, 2 * Math.PI, false);
+          };
+          break;
+        default:
+          break;
+      }
+    } else {
+      // make paths
+    }
+  }
+
+  slider(config: SliderOptions | string): void {
+    let initial = this.scaleSlider ? false : true;
+
+    if (typeof config === "string") {
+      this.scaleSlider = document.getElementById(config) as HTMLInputElement;
+      this.scaleMax = this.scaleSlider.max == "" ? 5 : +this.scaleSlider.max;
+      this.scaleSlider.max = String(this.scaleMax);
+      this.scaleSlider.step = this.scaleSlider.step == "" ? "0.1" : this.scaleSlider.step;
+    } else if (typeof config === "object") {
+      config.id && (this.scaleSlider = document.getElementById(config.id) as HTMLInputElement);
+
+      this.scaleMax = this.scaleSlider.max == "" ? 5 : +this.scaleSlider.max;
+      this.scaleSlider.max = String(this.scaleMax);
+      if (config.max) {
+        this.scaleSlider.max = String(config.max);
+        this.scaleMax = config.max;
+      }
+
+      this.scaleSlider.step = this.scaleSlider.step == "" ? String(0.1) : this.scaleSlider.step;
+      config.step && (this.scaleSlider.step = String(config.step));
+
+      let disabled = config.disabled ? config.disabled : !this.canSlider;
+      this.canSlider = !disabled;
+    } else {
+      console.log("whoops... need string or object for slider"); // TODO: Sort error handling
+    }
+
+    if (initial) {
+      this.scaleSlider.min = "1";
+      this.scaleSlider.value = "1";
+      this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
     }
   }
 
@@ -170,10 +217,8 @@ export default class Avatar {
     this.calculateViewRect();
     this.clearCanvas();
     this.context.save();
-    if (this.clip) {
-      this.context.arc(this.canvas.width / 2, this.canvas.height / 2, this.canvas.height / 2, 0, 2 * Math.PI, false);
-      this.context.clip();
-    }
+    this.clipFunction && this.clipFunction();
+    this.clipFunction && this.context.clip();
     this.context.drawImage(this.image, this.viewRect.x, this.viewRect.y, this.viewRect.width, this.viewRect.height, 0, 0, this.canvas.width, this.canvas.height);
     this.context.restore();
   }
