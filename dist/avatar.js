@@ -64,7 +64,7 @@ var Avatar = /** @class */ (function () {
         this.canvas.addEventListener("wheel", function (e) {
             e.preventDefault();
             if (_this.canZoom && _this.canScroll) {
-                var scale = _this.scaleModifier + e.deltaY * -0.005;
+                var scale = _this.scaleModifier + e.deltaY * -0.025;
                 scale = Math.min(_this.scaleMax, Math.max(1, scale));
                 _this.scaleModifier = scale;
                 _this.imageOrigin.x = (_this.imageOrigin.x + _this.mouseOnImage.x) / 2;
@@ -239,7 +239,15 @@ var Avatar = /** @class */ (function () {
             }
         }
         else {
-            // TODO: this should be an array of [x,y] to draw clip path
+            var first_1 = config.shift();
+            this.clipFunction = function () {
+                _this.context.moveTo(first_1[0], first_1[1]);
+                for (var _i = 0, config_1 = config; _i < config_1.length; _i++) {
+                    var point = config_1[_i];
+                    _this.context.lineTo(point[0], point[1]);
+                }
+                _this.context.closePath();
+            };
         }
     };
     Avatar.prototype.slider = function (config) {

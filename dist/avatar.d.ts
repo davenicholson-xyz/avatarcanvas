@@ -64,7 +64,7 @@ export default class Avatar {
     toJPG(quality?: number): string;
     toBlob(cb: Function): void;
     fileSelect(cb?: Function): void;
-    clip(config: string | []): void;
+    clip(config: string | [number, number][]): void;
     slider(config: SliderOptions | string): void;
 }
 export {};

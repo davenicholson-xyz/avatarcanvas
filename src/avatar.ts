@@ -111,7 +111,7 @@ export default class Avatar {
     this.canvas.addEventListener("wheel", (e: WheelEvent): void => {
       e.preventDefault();
       if (this.canZoom && this.canScroll) {
-        let scale = this.scaleModifier + e.deltaY * -0.005;
+        let scale = this.scaleModifier + e.deltaY * -0.025;
         scale = Math.min(this.scaleMax, Math.max(1, scale));
         this.scaleModifier = scale;
 
@@ -278,7 +278,7 @@ export default class Avatar {
     fileselect.remove();
   }
 
-  clip(config: string | []): void {
+  clip(config: string | [number, number][]): void {
     if (typeof config === "string") {
       switch (config) {
         case "circle":
@@ -303,7 +303,14 @@ export default class Avatar {
           break;
       }
     } else {
-      // TODO: this should be an array of [x,y] to draw clip path
+      let first = config.shift();
+      this.clipFunction = () => {
+        this.context.moveTo(first![0], first![1]);
+        for (let point of config) {
+          this.context.lineTo(point[0], point[1]);
+        }
+        this.context.closePath();
+      };
     }
   }
 

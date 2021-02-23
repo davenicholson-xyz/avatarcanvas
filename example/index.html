@@ -32,7 +32,8 @@
 
         let avatar = new Avatar('avatar', {
             slider: "scaleSlider",
-            clip: "circle",
+            // clip: "diamond",
+            // clip: [[0, 256], [128, 0], [256, 256]],
             image: 'images/one.jpg',
         })
 
@@ -49,6 +50,7 @@
 
         document.getElementById("change").addEventListener("click", (e) => {
             avatar.fileSelect()
+            avatar.clip("circle")
         })
 
         document.getElementById("save").addEventListener("click", (e) => {
