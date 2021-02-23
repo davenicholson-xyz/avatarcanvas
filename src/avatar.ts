@@ -49,7 +49,7 @@ export default class Avatar {
   private canSlider: boolean = true;
   private canPan: boolean = true;
 
-  private clipFunction!: Function;
+  private clipFunction!: Function | null;
 
   constructor(canvas: string, config: AvatarConfig = {}) {
     this.canvas = document.getElementById(canvas) as HTMLCanvasElement;
@@ -279,6 +279,11 @@ export default class Avatar {
   }
 
   clip(config: string | [number, number][]): void {
+    if (!config) {
+      this.clipFunction = null;
+      return;
+    }
+
     if (typeof config === "string") {
       switch (config) {
         case "circle":
@@ -296,11 +301,22 @@ export default class Avatar {
             this.context.lineTo(tp.x, tp.y);
             this.context.lineTo(rp.x, rp.y);
             this.context.lineTo(bp.x, bp.y);
-            this.context.lineTo(lp.x, lp.y);
+            this.context.closePath();
+          };
+          break;
+        case "triangle":
+          let p1: Point = { x: this.canvas.width / 2, y: 0 };
+          let p2: Point = { x: this.canvas.width, y: this.canvas.height };
+          let p3: Point = { x: 0, y: this.canvas.height };
+          this.clipFunction = () => {
+            this.context.moveTo(p1.x, p1.y);
+            this.context.lineTo(p2.x, p2.y);
+            this.context.lineTo(p3.x, p3.y);
+            this.context.closePath();
           };
           break;
         default:
-          this.clipFunction = () => {};
+          this.clipFunction = null;
           break;
       }
     } else {

@@ -32,11 +32,11 @@
 
         let avatar = new Avatar('avatar', {
             slider: "scaleSlider",
-            // clip: "diamond",
+            clip: "triangle",
             // clip: [[0, 256], [128, 0], [256, 256]],
             image: 'images/one.jpg',
         })
-
+        avatar.clip()
         // const canvas = document.getElementById("source")
         // const context = canvas.getContext("2d")
 
@@ -50,7 +50,7 @@
 
         document.getElementById("change").addEventListener("click", (e) => {
             avatar.fileSelect()
-            avatar.clip("circle")
+            // avatar.clip("circle")
         })
 
         document.getElementById("save").addEventListener("click", (e) => {

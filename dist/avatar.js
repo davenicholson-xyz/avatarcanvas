@@ -214,6 +214,10 @@ var Avatar = /** @class */ (function () {
     };
     Avatar.prototype.clip = function (config) {
         var _this = this;
+        if (!config) {
+            this.clipFunction = null;
+            return;
+        }
         if (typeof config === "string") {
             switch (config) {
                 case "circle":
@@ -231,11 +235,22 @@ var Avatar = /** @class */ (function () {
                         _this.context.lineTo(tp_1.x, tp_1.y);
                         _this.context.lineTo(rp_1.x, rp_1.y);
                         _this.context.lineTo(bp_1.x, bp_1.y);
-                        _this.context.lineTo(lp_1.x, lp_1.y);
+                        _this.context.closePath();
+                    };
+                    break;
+                case "triangle":
+                    var p1_1 = { x: this.canvas.width / 2, y: 0 };
+                    var p2_1 = { x: this.canvas.width, y: this.canvas.height };
+                    var p3_1 = { x: 0, y: this.canvas.height };
+                    this.clipFunction = function () {
+                        _this.context.moveTo(p1_1.x, p1_1.y);
+                        _this.context.lineTo(p2_1.x, p2_1.y);
+                        _this.context.lineTo(p3_1.x, p3_1.y);
+                        _this.context.closePath();
                     };
                     break;
                 default:
-                    this.clipFunction = function () { };
+                    this.clipFunction = null;
                     break;
             }
         }
