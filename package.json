@@ -9,7 +9,6 @@
     "watch": "tsc-watch -p ."
   },
   "devDependencies": {
-    "esbuild": "^0.8.49",
     "tsc-watch": "^4.2.9",
     "typescript": "^4.1.5"
   }
