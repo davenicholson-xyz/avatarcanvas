@@ -14,6 +14,15 @@ Having an inital canvas (with width and height set) we can attach can create an 
 const avatar = new Avatar("avatar");
 ```
 
+### Constructor arguments
+
+| method   | description                                                                                                    | type | default |
+| -------- | -------------------------------------------------------------------------------------------------------------- | ---- | ------- |
+| `image`  | Initial image to display as avatar                                                                             |      |         |
+| `slider` | ID of a slider to use for zooming or slider options object                                                     |      |         |
+| `file`   | ID of a button to use to open file selection for image                                                         |      |         |
+| `clip`   | Either string of one of the defaults `circle`,`diamond` or `triangle` or an array of `[x,y]` to draw clip path |      |         |
+
 ### thingy methods
 
 | method        | description                                                                            | type      | default |
