@@ -57,4 +57,4 @@ avatar.toBlob((blob) => {
 
 ## Clip Paths
 
-![Default clip paths](https://raw.githubusercontent.com/davenicholson-xyz/avatar/main/docs/default-clip-paths.png "Default clip paths. Circle, Diamond and Triangle")
+<img src="https://raw.githubusercontent.com/davenicholson-xyz/avatar/main/docs/default-clip-paths.png" alt="Default clip paths" width=600px/>
