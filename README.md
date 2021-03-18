@@ -30,8 +30,9 @@ const avatar = new Avatar("avatar");
 | `allowZoom`   | Allow zooming on avatar. This will disable both scrollwheel zooming and slider zooming | `boolean` | `true`  |
 | `allowScroll` | Allow scrolling on avatar                                                              | `boolean` | `true`  |
 | `allowSlider` | Allow slider on avatar                                                                 | `boolean` | `true`  |
-| `allowPan`    | Allow panning of the avatar                                                            | `boolean` | `true`  |
-| `allowPan`    | Allow panning of the avatar                                                            | `boolean` | `true`  |
+| `allowPan`    | Allow panning of the avatar                                                            |
+
+## exporting
 
 | method   | description                        | arguments  | comment                  |
 | -------- | ---------------------------------- | ---------- | ------------------------ |
@@ -53,3 +54,7 @@ avatar.toBlob((blob) => {
   // e.g. send blob to server...
 });
 ```
+
+## Clip Paths
+
+![Default clip paths](https://raw.githubusercontent.com/davenicholson-xyz/avatar/main/docs/default-clip-paths.png "Default clip paths. Circle, Diamond and Triangle")

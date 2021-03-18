@@ -22,9 +22,7 @@ var Avatar = /** @class */ (function () {
         this.image = new Image();
         this.image.crossOrigin = "anonymous";
         this.image.addEventListener("load", this.imageChange.bind(this));
-        if (config.image) {
-            this.image.src = config.image;
-        }
+        config.image && this.setImage(config.image);
         config.slider && this.slider(config.slider);
         config.clip && this.clip(config.clip);
         if (config.file) {
@@ -69,16 +67,16 @@ var Avatar = /** @class */ (function () {
                 _this.scaleModifier = scale;
                 _this.imageOrigin.x = (_this.imageOrigin.x + _this.mouseOnImage.x) / 2;
                 _this.imageOrigin.y = (_this.imageOrigin.y + _this.mouseOnImage.y) / 2;
-                // // -- Origin to 20% of origin to mouse distance -- looks a bit crap
+                // -- Origin to 20% of origin to mouse distance -- looks a bit crap
                 // let dx = this.imageOrigin.x - this.mouseOnImage.x;
                 // let dy = this.imageOrigin.x - this.mouseOnImage.x;
-                // let length = Math.sqrt(dx * dx + dy * dy);
+                // let length = Math.max(1, Math.sqrt(dx * dx + dy * dy));
                 // let ux = dx / length;
                 // let uy = dy / length;
-                // let nx = this.imageOrigin.x - ux * (length / 2);
-                // let ny = this.imageOrigin.y - uy * (length / 2);
+                // let nx = this.imageOrigin.x - ux * (length / 20);
+                // let ny = this.imageOrigin.y - uy * (length / 20);
                 // this.imageOrigin.x = nx;
-                // this.imageOrigin.y = nx;
+                // this.imageOrigin.y = ny;
                 if (_this.scaleSlider) {
                     _this.scaleSlider.valueAsNumber = _this.scaleModifier;
                 }
@@ -200,6 +198,9 @@ var Avatar = /** @class */ (function () {
             cb(blob);
         });
     };
+    Avatar.prototype.setImage = function (image) {
+        this.image.src = image;
+    };
     Avatar.prototype.fileSelect = function (cb) {
         var _this = this;
         var fileselect = document.createElement("input");
@@ -299,5 +300,5 @@ var Avatar = /** @class */ (function () {
     };
     return Avatar;
 }());
-export default Avatar;
+export { Avatar };
 //# sourceMappingURL=avatar.js.map

@@ -2,7 +2,7 @@ interface AvatarConfig {
     image?: string;
     slider?: Required<SliderOptions> | string;
     file?: string;
-    clip?: string;
+    clip?: string | [number, number][];
 }
 interface SliderOptions {
     id: string;
@@ -20,7 +20,7 @@ interface Box {
     width: number;
     height: number;
 }
-export default class Avatar {
+export declare class Avatar {
     private canvas;
     private context;
     private image;
@@ -63,6 +63,7 @@ export default class Avatar {
     toPNG(quality?: number): string;
     toJPG(quality?: number): string;
     toBlob(cb: Function): void;
+    setImage(image: string): void;
     fileSelect(cb?: Function): void;
     clip(config: string | [number, number][]): void;
     slider(config: SliderOptions | string): void;

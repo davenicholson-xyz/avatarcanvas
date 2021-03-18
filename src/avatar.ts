@@ -2,7 +2,7 @@ interface AvatarConfig {
   image?: string;
   slider?: Required<SliderOptions> | string;
   file?: string;
-  clip?: string;
+  clip?: string | [number, number][];
 }
 
 interface SliderOptions {
@@ -24,7 +24,7 @@ interface Box {
   height: number;
 }
 
-export default class Avatar {
+export class Avatar {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
   private image: HTMLImageElement;
@@ -61,10 +61,7 @@ export default class Avatar {
     this.image.crossOrigin = "anonymous";
     this.image.addEventListener("load", this.imageChange.bind(this));
 
-    if (config.image) {
-      this.image.src = config.image;
-    }
-
+    config.image && this.setImage(config.image);
     config.slider && this.slider(config.slider);
     config.clip && this.clip(config.clip);
 
@@ -118,16 +115,16 @@ export default class Avatar {
         this.imageOrigin.x = (this.imageOrigin.x + this.mouseOnImage.x) / 2;
         this.imageOrigin.y = (this.imageOrigin.y + this.mouseOnImage.y) / 2;
 
-        // // -- Origin to 20% of origin to mouse distance -- looks a bit crap
+        // -- Origin to 20% of origin to mouse distance -- looks a bit crap
         // let dx = this.imageOrigin.x - this.mouseOnImage.x;
         // let dy = this.imageOrigin.x - this.mouseOnImage.x;
-        // let length = Math.sqrt(dx * dx + dy * dy);
+        // let length = Math.max(1, Math.sqrt(dx * dx + dy * dy));
         // let ux = dx / length;
         // let uy = dy / length;
-        // let nx = this.imageOrigin.x - ux * (length / 2);
-        // let ny = this.imageOrigin.y - uy * (length / 2);
+        // let nx = this.imageOrigin.x - ux * (length / 20);
+        // let ny = this.imageOrigin.y - uy * (length / 20);
         // this.imageOrigin.x = nx;
-        // this.imageOrigin.y = nx;
+        // this.imageOrigin.y = ny;
 
         if (this.scaleSlider) {
           this.scaleSlider.valueAsNumber = this.scaleModifier;
@@ -264,6 +261,10 @@ export default class Avatar {
     this.canvas.toBlob((blob) => {
       cb(blob);
     });
+  }
+
+  setImage(image: string): void {
+    this.image.src = image;
   }
 
   fileSelect(cb?: Function): void {
