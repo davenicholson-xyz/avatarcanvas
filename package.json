@@ -1,7 +1,7 @@
 {
   "name": "avatar",
   "version": "1.0.0",
-  "main": "dist/avatar.js",
+  "main": "dist/avatarcanvas.js",
   "types": "dist",
   "license": "MIT",
   "scripts": {
