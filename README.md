@@ -1,10 +1,6 @@
 # AvatarCanvas
 
-AvatarCanvas is a Javascript class to create avatars/profile pictures with ease. Just pass the id of an existing canvas and images can be cropped and zoomed with ease.
-
-- This is a point
-- this is also a point
-- and this
+AvatarCanvas is a Javascript class to create avatars/profile pictures with ease. Just pass the id of an existing canvas and images can be cropped and zoomed with then exported to required formats
 
 ## Installation
 
@@ -89,6 +85,7 @@ const avatar = new AvatarCanvas("avatar", {
   clip: [ [0, 0], [128, 128], [256, 0], [256, 256], [0, 256], ]
 });
 ```
+<img src="https://raw.githubusercontent.com/davenicholson-xyz/avatar/main/docs/custom-clip-path.png" alt="Default clip paths" width=256px/>
 
 ### Enable/Disable methods
 Zooming and panning can be enabled/disabled by using the following methods
@@ -106,7 +103,7 @@ Zooming and panning can be enabled/disabled by using the following methods
 | `toPNG`  | Returns the images as a PNG string. Clip paths will result in transparency. | `quality`  | 
 | `toJPG`  | Returns the images as a JPG string | `quality`  | 
 
-These methods will return the canvas image as a string format representing the image. If `toPNG` is used the clip path will result transparency.
+These methods will return the canvas image as a string format representing the image. If `toPNG` is used the clip path will result in transparency.
 ```javascript
 const img = document.getElementById("image_to_replace");
 img.src = avatar.toPNG(90);
