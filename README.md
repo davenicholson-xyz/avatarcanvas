@@ -40,10 +40,10 @@ The image argument should also be passed unless you wish to display anything tha
 
 | method   | description                                                                                                    |
 | -------- | -------------------------------------------------------------------------------------------------------------- |
-| `image`  | Initial image to display on the canvas. This can wither be local or a remote `http` image                      |
+| `image`  | Initial image to display on the canvas. This can either be local or a remote `http` image                      |
 | `slider` | ID of a slider to use for zooming or slider options object                                                     |
 | `loader` | ID of a button to use to open file selection for image                                                         |
-| `clip`   | Either string of one of the defaults `circle`,`diamond` or `triangle` or an array of `[x,y]` to draw clip path |
+| `clip`   | Either a string of one of the defaults `circle`,`diamond` or `triangle` paths or an array of `[x,y]` to draw clip path |
 
 ### `slider`
 
@@ -103,13 +103,7 @@ You can also provide an array of `[x,y]` points to create a custom clip path
 ```javascript
 const avatar = new AvatarCanvas("avatar", {
   image: "./test.jpg",
-  clip: [
-    [0, 0],
-    [128, 128],
-    [256, 0],
-    [256, 256],
-    [0, 256],
-  ],
+  clip: [ [0, 0], [128, 128], [256, 0], [256, 256], [0, 256], ],
 });
 ```
 
