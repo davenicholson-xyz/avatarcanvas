@@ -105,6 +105,7 @@ Zooming and panning can be enabled/disabled by using the following methods
 | -------- | ---------------------------------- | ---------- | 
 | `toPNG`  | Returns the images as a PNG string. Clip paths will result in transparency. | `quality`  | 
 | `toJPG`  | Returns the images as a JPG string | `quality`  | 
+
 These methods will return the canvas image as a string format representing the image. If `toPNG` is used the clip path will result transparency.
 ```javascript
 const img = document.getElementById("image_to_replace");
