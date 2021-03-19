@@ -107,7 +107,7 @@ const avatar = new AvatarCanvas("avatar", {
 });
 ```
 
-<img src="https://raw.githubusercontent.com/davenicholson-xyz/avatar/main/docs/custom-clip-path.png" alt="Default clip paths" width=256px/>
+<img src="https://raw.githubusercontent.com/davenicholson-xyz/avatar/main/docs/custom-clip-path.png" alt="Custom clip path" width=256px/>
 
 ### Enable/Disable methods
 
