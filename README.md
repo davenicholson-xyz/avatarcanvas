@@ -7,7 +7,6 @@ AvatarCanvas is a Javascript class to create avatars/profile pictures with ease.
 ### npm
 
 AvatarCanvas can be found on the [npm repository](https://www.npmjs.com/package/js-cookie) as `avatarcanvas`.
-
 ```
 $ npm i avatar-canvas
 ```
@@ -31,7 +30,7 @@ Having an inital canvas (with width and height set) we can create an avatar.
 The first argument of the constructor is the ID of the canvas to use as the avatar editor.
 
 ```javascript
-const avatar = new AvatasCanvas("avatar", (image: "./image.jpg"));
+const avatar = new AvatasCanvas("avatar", { image: "./image.jpg" });
 ```
 
 The image argument should also be passed unless you wish to display anything that has previously been added to the canvas. An image can be loaded later with the `setImage` method.
@@ -141,7 +140,10 @@ A `quality` between 0.1 and 1 can be passed to change the quality ofthe returned
 By calling `toBlob` with a callback the canvas data will create a Blob object that can be used to send to the server etc..
 
 ```javascript
+// Example of sending Blob to server
 avatar.toBlob((blob) => {
-  // Do something with Blob data
+    const formdata = new FormData()
+    formdata.append('image', blob)
+    fetch('/upload', { method: "POST", body: formdata }).then(/* ... */)
 });
 ```

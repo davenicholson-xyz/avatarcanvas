@@ -4,7 +4,20 @@
   "main": "dist/avatarcanvas.js",
   "types": "dist",
   "license": "MIT",
-  "description": "Pan and zoom image to create avatar",
+  "description": "Pan and zoom image to create avatar on an existing canvas element",
+  "keywords": [
+    "avatar",
+    "canvas",
+    "pan",
+    "zoom",
+    "profile",
+    "image",
+    "scroll",
+    "export",
+    "png",
+    "jpg",
+    "blob"
+  ],
   "author": "Dave Nicholson",
   "repository": {
     "type": "git",
