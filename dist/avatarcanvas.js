@@ -1,5 +1,5 @@
-var Avatar = /** @class */ (function () {
-    function Avatar(canvas, config) {
+var AvatarCanvas = /** @class */ (function () {
+    function AvatarCanvas(canvas, config) {
         var _this = this;
         if (config === void 0) { config = {}; }
         this.scale = 1;
@@ -33,7 +33,7 @@ var Avatar = /** @class */ (function () {
             });
         }
     }
-    Avatar.prototype.canvasEvents = function () {
+    AvatarCanvas.prototype.canvasEvents = function () {
         var _this = this;
         this.canvas.addEventListener("mousedown", function (e) {
             _this.isDragging = true;
@@ -85,16 +85,16 @@ var Avatar = /** @class */ (function () {
             }
         });
     };
-    Avatar.prototype.emit = function (name, detail) {
+    AvatarCanvas.prototype.emit = function (name, detail) {
         window.dispatchEvent(new CustomEvent("avatar-" + name, { detail: detail }));
     };
-    Avatar.prototype.getCanvasPoint = function (e) {
+    AvatarCanvas.prototype.getCanvasPoint = function (e) {
         var canvasRect = this.canvas.getBoundingClientRect();
         var x = e.clientX - canvasRect.x;
         var y = e.clientY - canvasRect.y;
         return { x: x, y: y };
     };
-    Avatar.prototype.imageChange = function () {
+    AvatarCanvas.prototype.imageChange = function () {
         this.emit("imagechanged", { image: this.image.src });
         this.scaleModifier = 1;
         if (this.scaleSlider) {
@@ -105,7 +105,7 @@ var Avatar = /** @class */ (function () {
         this.imageOrigin.y = this.image.height / 2;
         this.drawImage();
     };
-    Avatar.prototype.drawImage = function () {
+    AvatarCanvas.prototype.drawImage = function () {
         this.calculateViewRect();
         this.clearCanvas();
         this.context.save();
@@ -114,17 +114,17 @@ var Avatar = /** @class */ (function () {
         this.context.drawImage(this.image, this.viewRect.x, this.viewRect.y, this.viewRect.width, this.viewRect.height, 0, 0, this.canvas.width, this.canvas.height);
         this.context.restore();
     };
-    Avatar.prototype.clearCanvas = function () {
+    AvatarCanvas.prototype.clearCanvas = function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     };
-    Avatar.prototype.scaleSliderChange = function (e) {
+    AvatarCanvas.prototype.scaleSliderChange = function (e) {
         if (this.canZoom && this.canSlider) {
             this.scaleModifier = +e.target.value;
             this.drawImage();
         }
         this.emit("scalechanged", { slider: true, scale: this.scale, modifier: this.scaleModifier, absolute: this.scale * this.scaleModifier, origin: this.imageOrigin });
     };
-    Avatar.prototype.calculateViewRect = function () {
+    AvatarCanvas.prototype.calculateViewRect = function () {
         var scale = this.scale * this.scaleModifier;
         this.viewRect.width = this.canvas.width / scale;
         this.viewRect.height = this.canvas.height / scale;
@@ -132,7 +132,7 @@ var Avatar = /** @class */ (function () {
         this.viewRect.y = this.imageOrigin.y - this.offset.y - this.viewRect.height / 2;
         this.checkViewRectBounds();
     };
-    Avatar.prototype.checkViewRectBounds = function () {
+    AvatarCanvas.prototype.checkViewRectBounds = function () {
         if (this.imageOrigin.x - this.offset.x - this.viewRect.width / 2 < 0) {
             var overX = this.imageOrigin.x - this.offset.x - this.viewRect.width / 2;
             this.viewRect.x = this.viewRect.x - overX;
@@ -154,54 +154,54 @@ var Avatar = /** @class */ (function () {
             this.imageOrigin.y = this.image.height - this.viewRect.height / 2;
         }
     };
-    Avatar.prototype.getCanvas = function () {
+    AvatarCanvas.prototype.getCanvas = function () {
         return this.canvas;
     };
-    Avatar.prototype.getViewRect = function () {
+    AvatarCanvas.prototype.getViewRect = function () {
         return this.viewRect;
     };
-    Avatar.prototype.getOrigin = function () {
+    AvatarCanvas.prototype.getOrigin = function () {
         return this.imageOrigin;
     };
-    Avatar.prototype.getImage = function () {
+    AvatarCanvas.prototype.getImage = function () {
         return this.image;
     };
-    Avatar.prototype.getScale = function () {
+    AvatarCanvas.prototype.getScale = function () {
         return this.scale * this.scaleModifier;
     };
-    Avatar.prototype.allowZoom = function (allow) {
+    AvatarCanvas.prototype.allowZoom = function (allow) {
         if (allow === void 0) { allow = true; }
         this.canZoom = allow;
     };
-    Avatar.prototype.allowScroll = function (allow) {
+    AvatarCanvas.prototype.allowScroll = function (allow) {
         if (allow === void 0) { allow = true; }
         this.canScroll = allow;
     };
-    Avatar.prototype.allowSlider = function (allow) {
+    AvatarCanvas.prototype.allowSlider = function (allow) {
         if (allow === void 0) { allow = true; }
         this.canSlider = allow;
     };
-    Avatar.prototype.allowPan = function (allow) {
+    AvatarCanvas.prototype.allowPan = function (allow) {
         if (allow === void 0) { allow = true; }
         this.canPan = allow;
     };
-    Avatar.prototype.toPNG = function (quality) {
+    AvatarCanvas.prototype.toPNG = function (quality) {
         if (quality === void 0) { quality = 1.0; }
         return this.canvas.toDataURL("image/png", quality);
     };
-    Avatar.prototype.toJPG = function (quality) {
+    AvatarCanvas.prototype.toJPG = function (quality) {
         if (quality === void 0) { quality = 1.0; }
         return this.canvas.toDataURL("image/jpeg", quality);
     };
-    Avatar.prototype.toBlob = function (cb) {
+    AvatarCanvas.prototype.toBlob = function (cb) {
         this.canvas.toBlob(function (blob) {
             cb(blob);
         });
     };
-    Avatar.prototype.setImage = function (image) {
+    AvatarCanvas.prototype.setImage = function (image) {
         this.image.src = image;
     };
-    Avatar.prototype.fileSelect = function (cb) {
+    AvatarCanvas.prototype.fileSelect = function (cb) {
         var _this = this;
         var fileselect = document.createElement("input");
         fileselect.type = "file";
@@ -213,7 +213,7 @@ var Avatar = /** @class */ (function () {
         fileselect.click();
         fileselect.remove();
     };
-    Avatar.prototype.clip = function (config) {
+    AvatarCanvas.prototype.clip = function (config) {
         var _this = this;
         if (!config) {
             this.clipFunction = null;
@@ -267,7 +267,7 @@ var Avatar = /** @class */ (function () {
             };
         }
     };
-    Avatar.prototype.slider = function (config) {
+    AvatarCanvas.prototype.slider = function (config) {
         var initial = this.scaleSlider ? false : true;
         if (typeof config === "string") {
             this.scaleSlider = document.getElementById(config);
@@ -298,7 +298,7 @@ var Avatar = /** @class */ (function () {
             this.scaleSlider.addEventListener("input", this.scaleSliderChange.bind(this));
         }
     };
-    return Avatar;
+    return AvatarCanvas;
 }());
-export { Avatar };
-//# sourceMappingURL=avatar.js.map
+export { AvatarCanvas };
+//# sourceMappingURL=avatarcanvas.js.map

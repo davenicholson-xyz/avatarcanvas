@@ -1,7 +1,7 @@
 interface AvatarConfig {
   image?: string;
   slider?: Required<SliderOptions> | string;
-  file?: string;
+  loader?: string;
   clip?: string | [number, number][];
 }
 
@@ -24,7 +24,7 @@ interface Box {
   height: number;
 }
 
-export class Avatar {
+export class AvatarCanvas {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
   private image: HTMLImageElement;
@@ -65,8 +65,8 @@ export class Avatar {
     config.slider && this.slider(config.slider);
     config.clip && this.clip(config.clip);
 
-    if (config.file) {
-      this.fileInput = document.getElementById(config.file) as HTMLInputElement;
+    if (config.loader) {
+      this.fileInput = document.getElementById(config.loader) as HTMLInputElement;
       this.fileInput.addEventListener("change", (e: Event): void => {
         let imagefile = (<HTMLInputElement>e.target).files![0];
         this.image.src = URL.createObjectURL(imagefile);

@@ -20,7 +20,7 @@ interface Box {
     width: number;
     height: number;
 }
-export declare class Avatar {
+export declare class AvatarCanvas {
     private canvas;
     private context;
     private image;
@@ -69,4 +69,4 @@ export declare class Avatar {
     slider(config: SliderOptions | string): void;
 }
 export {};
-//# sourceMappingURL=avatar.d.ts.map
+//# sourceMappingURL=avatarcanvas.d.ts.map
