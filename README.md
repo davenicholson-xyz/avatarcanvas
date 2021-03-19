@@ -6,14 +6,14 @@ AvatarCanvas is a Javascript class to create avatars/profile pictures with ease.
 
 ### npm
 
-AvatarCanvas can be found on the [npm repository](https://www.npmjs.com/package/js-cookie) as `avatarcanvas`.
+AvatarCanvas can be found on the [npm repositories](https://www.npmjs.com/package/avatarcanvas) as `avatarcanvas`.
 ```
 $ npm i avatar-canvas
 ```
 
 ## Importing
 
-AvatarCanvas should be installed as an ES module.
+AvatarCanvas should be imported as an ES module.
 
 ```javascript
 import { AvatarCanvas } from "avatarcanvas";
