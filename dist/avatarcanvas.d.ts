@@ -1,7 +1,7 @@
 interface AvatarConfig {
     image?: string;
     slider?: Required<SliderOptions> | string;
-    file?: string;
+    loader?: string;
     clip?: string | [number, number][];
 }
 interface SliderOptions {

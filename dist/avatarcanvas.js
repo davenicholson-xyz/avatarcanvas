@@ -25,8 +25,8 @@ var AvatarCanvas = /** @class */ (function () {
         config.image && this.setImage(config.image);
         config.slider && this.slider(config.slider);
         config.clip && this.clip(config.clip);
-        if (config.file) {
-            this.fileInput = document.getElementById(config.file);
+        if (config.loader) {
+            this.fileInput = document.getElementById(config.loader);
             this.fileInput.addEventListener("change", function (e) {
                 var imagefile = e.target.files[0];
                 _this.image.src = URL.createObjectURL(imagefile);

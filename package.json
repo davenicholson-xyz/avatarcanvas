@@ -4,8 +4,14 @@
   "main": "dist/avatarcanvas.js",
   "types": "dist",
   "license": "MIT",
+  "description": "Pan and zoom image to create avatar",
+  "author": "Dave Nicholson",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/davenicholson-xyz/avatarcanvas.git"
+  },
   "scripts": {
-    "build": "tsc -p .",
+    "build": "rm -rf dist/* && tsc -p .",
     "watch": "tsc-watch -p ."
   },
   "devDependencies": {
