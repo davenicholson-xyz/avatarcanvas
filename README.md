@@ -119,7 +119,7 @@ Zooming and panning can be enabled/disabled by using the following methods
 | `allowSlider` | Allow slider on avatar                                                                 | `boolean` | `true`  |
 | `allowPan`    | Allow panning of the avatar                                                            |
 
-## Exporting canvas image
+### Exporting canvas image
 
 | method  | description                                                                 | arguments |
 | ------- | --------------------------------------------------------------------------- | --------- |
@@ -135,7 +135,7 @@ img.src = avatar.toPNG(0.9);
 
 A `quality` between 0.1 and 1 can be passed to change the quality ofthe returned image and alter file size
 
-## `toBlob` object
+### `toBlob` object
 
 By calling `toBlob` with a callback the canvas data will create a Blob object that can be used to send to the server etc..
 
