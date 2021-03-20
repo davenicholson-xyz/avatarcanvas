@@ -8,7 +8,7 @@ AvatarCanvas is a Javascript class to create avatars/profile pictures with ease.
 
 AvatarCanvas can be found on the [npm repositories](https://www.npmjs.com/package/avatarcanvas) as `avatarcanvas`.
 ```
-$ npm i avatar-canvas
+$ npm i avatarcanvas
 ```
 
 ## Importing
