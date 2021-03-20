@@ -95,7 +95,7 @@ const avatar = new AvatarCanvas("avatar", {
 });
 ```
 
-<img src="https://raw.githubusercontent.com/davenicholson-xyz/avatar/main/docs/default-clip-paths.png" alt="Default clip paths" width=600px/>
+<img src="https://raw.githubusercontent.com/davenicholson-xyz/avatar/main/docs/default-clip-paths.jpg" alt="Default clip paths" width=600px/>
 
 You can also provide an array of `[x,y]` points to create a custom clip path
 
@@ -106,7 +106,7 @@ const avatar = new AvatarCanvas("avatar", {
 });
 ```
 
-<img src="https://raw.githubusercontent.com/davenicholson-xyz/avatar/main/docs/custom-clip-path.png" alt="Custom clip path" width=256px/>
+<img src="https://raw.githubusercontent.com/davenicholson-xyz/avatar/main/docs/custom-clip-path.jpg" alt="Custom clip path" width=256px/>
 
 ### Enable/Disable methods
 
