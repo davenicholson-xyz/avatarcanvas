@@ -2,8 +2,7 @@
   "name": "avatarcanvas",
   "version": "1.0.3",
   "main": "dist/avatarcanvas.js",
-  "typings": "dist/avatarcanvas.d.ts",
-  "types": "dist/",
+  "types": "dist/avatarcanvas.d.ts",
   "license": "MIT",
   "description": "Pan and zoom image to create avatar on an existing canvas element",
   "keywords": [
