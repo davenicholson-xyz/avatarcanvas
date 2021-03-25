@@ -1,6 +1,6 @@
 {
   "name": "avatarcanvas",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "dist/avatarcanvas.js",
   "types": "dist/avatarcanvas.d.ts",
   "license": "MIT",
