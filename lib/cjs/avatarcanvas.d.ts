@@ -69,4 +69,3 @@ export declare class AvatarCanvas {
     slider(config: SliderOptions | string): void;
 }
 export {};
-//# sourceMappingURL=avatarcanvas.d.ts.map

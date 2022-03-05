@@ -1,7 +1,11 @@
 {
   "name": "avatarcanvas",
   "version": "1.0.4",
-  "main": "dist/avatarcanvas.js",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "files": [
+    "lib/"
+  ],
   "types": "dist/avatarcanvas.d.ts",
   "license": "MIT",
   "description": "Pan and zoom image to create avatar on an existing canvas element",
@@ -24,11 +28,9 @@
     "url": "git://github.com/davenicholson-xyz/avatarcanvas.git"
   },
   "scripts": {
-    "build": "rm -rf dist/* && tsc -p .",
-    "watch": "tsc-watch -p ."
+    "build": "rm -rf lib/ && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json"
   },
   "devDependencies": {
-    "tsc-watch": "^4.2.9",
     "typescript": "^4.1.5"
   }
 }
