@@ -2,8 +2,9 @@ interface AvatarConfig {
     image?: string;
     slider?: Required<SliderOptions> | string;
     loader?: string;
-    clip?: string | [number, number][];
+    clip?: ClipOptions;
 }
+declare type ClipOptions = "circle" | "triangle" | "diamond" | [number, number][];
 interface SliderOptions {
     id: string;
     max?: number;
