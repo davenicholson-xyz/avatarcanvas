@@ -41,7 +41,7 @@ The image argument should also be passed unless you wish to display anything tha
 | -------- | -------------------------------------------------------------------------------------------------------------- |
 | `image`  | Initial image to display on the canvas. This can either be local or a remote `http` image                      |
 | `slider` | ID of a slider to use for zooming or slider options object                                                     |
-| `loader` | ID of a file input element t oselect new image                                                                              |
+| `loader` | ID of a file input element to select new image                                                                              |
 | `clip`   | Either a string of one of the defaults `circle`,`diamond` or `triangle` paths or an array of `[x,y]` to draw clip path |
 
 ### `slider`
