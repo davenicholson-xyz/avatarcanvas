@@ -41,7 +41,7 @@ The image argument should also be passed unless you wish to display anything tha
 | -------- | -------------------------------------------------------------------------------------------------------------- |
 | `image`  | Initial image to display on the canvas. This can either be local or a remote `http` image                      |
 | `slider` | ID of a slider to use for zooming or slider options object                                                     |
-| `loader` | ID of a button to use to open file selection for image                                                         |
+| `loader` | ID of a file input element t oselect new image                                                                              |
 | `clip`   | Either a string of one of the defaults `circle`,`diamond` or `triangle` paths or an array of `[x,y]` to draw clip path |
 
 ### `slider`
@@ -73,10 +73,10 @@ const avatar = new AvatarCanvas("avatar", {
 
 ### `loader`
 
-This is the ID of a button (or any input element) which when clicked will open the file upload dialog box to select a new image for the canvas.
+This is the ID of a file input element to change the canvas image.
 
 ```html
-<button id="changeImage">Load an image</button>
+<input type="file" id="changeImage" />
 ```
 
 ```javascript
@@ -117,7 +117,7 @@ Zooming and panning can be enabled/disabled by using the following methods
 | `allowZoom`   | Allow zooming on avatar. This will disable both scrollwheel zooming and slider zooming | `boolean` | `true`  |
 | `allowScroll` | Allow scrolling on avatar                                                              | `boolean` | `true`  |
 | `allowSlider` | Allow slider on avatar                                                                 | `boolean` | `true`  |
-| `allowPan`    | Allow panning of the avatar                                                            |
+| `allowPan`    | Allow panning of the avatar                                                            | `boolean` | `true`  |
 
 ### Exporting canvas image
 
